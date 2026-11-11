@@ -6,6 +6,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
+import { apiFetch } from "../common";
 import type { useCRDTWorkspace } from "./crdt";
 
 function checkIfChromiumMissingKeys() {
@@ -28,8 +29,9 @@ function checkIfChromiumMissingKeys() {
 export default function Assistant(props: {
   crdtWorkspace: ReturnType<typeof useCRDTWorkspace>;
   selectedNodeIds: string[];
+  workspacePath: string;
 }) {
-  const { crdtWorkspace, selectedNodeIds } = props;
+  const { crdtWorkspace, selectedNodeIds, workspacePath } = props;
   const crdtWorkspaceRef = useRef(crdtWorkspace);
   crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
@@ -37,7 +39,6 @@ export default function Assistant(props: {
   const editorRef = useRef<HTMLDivElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const shouldAutoScrollRef = useRef(true);
-  const workspacePath = crdtWorkspace.ws?.path || "";
   const persistedMessages = crdtWorkspace.ws?.assistant_messages || [];
   const [messagesLoaded, setMessagesLoaded] = useState(false);
   const dictationBaseRef = useRef("");
@@ -83,13 +84,20 @@ export default function Assistant(props: {
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
       body: { workspace: workspacePath },
+      fetch: apiFetch,
     }),
   });
 
   // Initialize with persisted messages on first load
   useEffect(() => {
     if (!messagesLoaded && persistedMessages.length > 0 && messages.length === 0) {
-      setMessages(persistedMessages);
+      setMessages(
+        persistedMessages.map((message, index) => ({
+          id: `persisted-${index}`,
+          role: message.role,
+          parts: [{ type: "text", text: message.content }],
+        })),
+      );
       setMessagesLoaded(true);
     }
   }, [messagesLoaded, persistedMessages, messages.length, setMessages]);

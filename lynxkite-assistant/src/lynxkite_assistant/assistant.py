@@ -13,6 +13,7 @@ import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
+from lynxkite_core.workspace_paths import workspace_data_dir
 from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
 
 ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
@@ -147,9 +148,7 @@ async def assistant_stream(
     routes = {
         "/skills/": backends.FilesystemBackend(root_dir=skill_root, virtual_mode=True)
     }
-    workspace_files_path = (
-        Path(req.workspace).parent / ".workspace_files" / Path(req.workspace).name
-    )
+    workspace_files_path = workspace_data_dir(req.workspace)
     if workspace_files_path.exists():
         routes["/workspace_files/"] = backends.FilesystemBackend(
             root_dir=str(workspace_files_path), virtual_mode=True
@@ -179,7 +178,10 @@ async def assistant_stream(
             continue
         request_messages.append({"role": msg.role, "content": content})
     ws = workspace.Workspace.load(req.workspace)
-    ws.assistant_messages = request_messages.copy()
+    ws.assistant_messages = [
+        workspace.WorkspaceAssistantMessage.model_validate(message)
+        for message in request_messages
+    ]
     ws.save(req.workspace)
 
     async def generate():
@@ -201,7 +203,9 @@ async def assistant_stream(
         if not ws.assistant_messages:
             ws.assistant_messages = []
         ws.assistant_messages.append(
-            {"role": "assistant", "content": "".join(response_message)}
+            workspace.WorkspaceAssistantMessage(
+                role="assistant", content="".join(response_message)
+            )
         )
         ws.save(req.workspace)
 

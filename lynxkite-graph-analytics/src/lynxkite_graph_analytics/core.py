@@ -476,7 +476,7 @@ async def api_service_get(request):
       def chat_backend(input: Bundle):
           return ChatBackend()
 
-      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite.json/Chat%20backend%201/models
+      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite/Chat%20backend%201/models
     """
     service = await get_node_service(request)
     return await service.get(request)

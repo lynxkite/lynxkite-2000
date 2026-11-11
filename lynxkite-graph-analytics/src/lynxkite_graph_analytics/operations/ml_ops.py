@@ -33,7 +33,7 @@ def define_model(
 ):
     """Trains the selected model on the selected dataset. Most training parameters are set in the model definition."""
     assert model_workspace, "Model workspace is unset."
-    ws = load_ws(model_workspace + ".lynxkite.json")
+    ws = load_ws(model_workspace + ".lynxkite")
     m = pytorch_core.build_model(ws)
     m.source_workspace = model_workspace
     bundle = bundle.copy()

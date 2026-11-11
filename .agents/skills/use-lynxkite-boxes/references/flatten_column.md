@@ -25,7 +25,7 @@ def flatten_column(
     b = b.copy()
     df = b.dfs[table_name].copy()
 
-    df[column_name] = df[column_name].apply(lambda x: tuple(_recursive_flatten(x)))
+    df[column_name] = df[column_name].apply(lambda x: np.array(_recursive_flatten(x)))
     b.dfs[table_name] = df
     return b
 

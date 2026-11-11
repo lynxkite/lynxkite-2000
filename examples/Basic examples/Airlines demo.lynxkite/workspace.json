@@ -1,0 +1,1062 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "SQL 1 View tables 1",
+      "source": "SQL 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import GraphML 2 Cypher 1",
+      "source": "Import GraphML 2",
+      "sourceHandle": "output",
+      "target": "Cypher 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Cypher 1 View tables 2",
+      "source": "Cypher 1",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Import GraphML 2 output Betweenness centrality 2 G",
+      "source": "Import GraphML 2",
+      "sourceHandle": "output",
+      "target": "Betweenness centrality 2",
+      "targetHandle": "G"
+    },
+    {
+      "id": "Betweenness centrality 2 output Sample graph 1 graph",
+      "source": "Betweenness centrality 2",
+      "sourceHandle": "output",
+      "target": "Sample graph 1",
+      "targetHandle": "graph"
+    },
+    {
+      "id": "Betweenness centrality 2 output SQL 1 bundle",
+      "source": "Betweenness centrality 2",
+      "sourceHandle": "output",
+      "target": "SQL 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Sample graph 1 output Visualize graph 1 b",
+      "source": "Sample graph 1",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 272.0,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import GraphML",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "filename": "https://storage.googleapis.com/lynxkite_public_data/airlines.graphml.gz"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Import GraphML"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 272.0,
+      "id": "Import GraphML 2",
+      "parentId": null,
+      "position": {
+        "x": 1364.6405223695278,
+        "y": 739.0115677931503
+      },
+      "type": "basic",
+      "width": 402.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": true,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 200.03871614354074,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Graph operations > Sample graph",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 11754.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "nodes": "1000"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Sample graph"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 71.0,
+      "id": "Sample graph 1",
+      "parentId": null,
+      "position": {
+        "x": 2320.0,
+        "y": 400.0
+      },
+      "type": "basic",
+      "width": 317.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > SQL",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              },
+              "result": {
+                "columns": [
+                  "betweenness_centrality"
+                ],
+                "key": "result",
+                "length": 1.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "query": "select avg(betweenness_centrality) from nodes",
+          "save_as": "result"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "SQL"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 280.0,
+      "id": "SQL 1",
+      "parentId": null,
+      "position": {
+        "x": 2080.0,
+        "y": 680.0
+      },
+      "type": "basic",
+      "width": 480.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 56,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              },
+              "result": {
+                "columns": [
+                  "betweenness_centrality"
+                ],
+                "key": "result",
+                "length": 1.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "result": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 280.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 2680.0,
+        "y": 680.0
+      },
+      "type": "table_view",
+      "width": 320.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Query operations > Cypher",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              },
+              "result": {
+                "columns": [
+                  "a.city",
+                  "b.city"
+                ],
+                "key": "result",
+                "length": 2.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "query": "match (a {city: \"Debrecen\"})--(b)\nreturn a.city, b.city",
+          "save_as": "result"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Cypher"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 320.0,
+      "id": "Cypher 1",
+      "parentId": null,
+      "position": {
+        "x": 2080.0,
+        "y": 1040.0
+      },
+      "type": "basic",
+      "width": 480.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 11,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              },
+              "result": {
+                "columns": [
+                  "a.city",
+                  "b.city"
+                ],
+                "key": "result",
+                "length": 2.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "result": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "dragHandle": ".bg-primary",
+      "height": 320.0,
+      "id": "View tables 2",
+      "parentId": null,
+      "position": {
+        "x": 2680.0,
+        "y": 1040.0
+      },
+      "type": "table_view",
+      "width": 320.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": true,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "NetworkX > Algorithms > Centrality > Betweenness > Betweenness centrality",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 37274.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 10668.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "k": "10"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Betweenness centrality"
+      },
+      "height": 71.0,
+      "id": "Betweenness centrality 2",
+      "parentId": null,
+      "position": {
+        "x": 1811.3211709715142,
+        "y": 396.273358114571
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "airline",
+                  "airline ID",
+                  "codeshare",
+                  "destination airport id",
+                  "destination apirport",
+                  "equipment",
+                  "source",
+                  "source airport",
+                  "source airport id",
+                  "stops",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 11754.0
+              },
+              "nodes": {
+                "columns": [
+                  "alt",
+                  "betweenness_centrality",
+                  "city",
+                  "country",
+                  "dst",
+                  "iata",
+                  "icao",
+                  "id",
+                  "idx",
+                  "lat",
+                  "long",
+                  "name",
+                  "source",
+                  "type",
+                  "tz",
+                  "tz_name"
+                ],
+                "key": "nodes",
+                "length": 1000.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "edges",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "lat": "",
+              "lng": "",
+              "mode": "map",
+              "type": "position",
+              "xAttr": "long",
+              "yAttr": "lat",
+              "zoom": ""
+            },
+            {
+              "attribute": "tz",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "node_color"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "8",
+              "type": "node_size"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "0.3",
+              "type": "edge_width"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 774.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 2707.941277161725,
+        "y": -120.32985335713502
+      },
+      "type": "graph_visualization",
+      "width": 1155.0
+    }
+  ],
+  "paused": true
+}

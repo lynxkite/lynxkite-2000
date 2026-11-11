@@ -1,5 +1,6 @@
 """The FastAPI server for serving the LynxKite application."""
 
+import asyncio
 import os
 import pathlib
 import shutil
@@ -13,8 +14,7 @@ import starlette.datastructures
 import starlette.exceptions
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from lynxkite_core import opcontext, ops, workspace
-from lynxkite_core.folder_settings import SETTINGS_FILENAME
+from lynxkite_core import folder_settings, opcontext, ops, workspace, workspace_paths
 from pydantic_core import from_json
 
 from . import acl, auth, crdt, workspace_export
@@ -39,6 +39,8 @@ except ImportError:
     register_lim_routes = None
 
 LIM_WORKER = os.environ.get("AM_I_A_LIM_WORKER")
+data_path = pathlib.Path()
+acl.set_data_root(data_path)
 
 mem = joblib.Memory(".joblib-cache", verbose=0)
 ops.CACHE_WRAPPER = mem.cache
@@ -50,15 +52,35 @@ opcontext.TQDM_CAPTURER = capture_tqdm
 lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
+
+async def _assistant_requires_write(request: fastapi.Request):
+    await auth.check_permission(request, "write", "")
+
+
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 if assistant_router is not None:
-    app.include_router(assistant_router)
+    app.include_router(assistant_router, dependencies=[fastapi.Depends(_assistant_requires_write)])
 if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
 if register_lim_routes is not None and LIM_WORKER:
     register_lim_routes(app)
-app.add_middleware(GZipMiddleware)  # ty: ignore[invalid-argument-type]
+
+
+class DownloadAwareGZipMiddleware(GZipMiddleware):
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http" and scope["path"] in {
+            "/api/download",
+            "/api/export_workspace",
+        }:
+            # Avoid using GZip compression for download and export endpoints to monitor file sizes
+            # note: this will make single file transfers uncompressed
+            await self.app(scope, receive, send)
+            return
+        await super().__call__(scope, receive, send)
+
+
+app.add_middleware(DownloadAwareGZipMiddleware)  # ty: ignore[invalid-argument-type]
 
 
 def _get_ops(env: str):
@@ -85,10 +107,6 @@ def get_config() -> dict[str, bool | str | None]:
     }
 
 
-data_path = pathlib.Path()
-acl.set_data_root(data_path)
-
-
 @app.get("/api/permissions")
 async def get_permissions(path: str, request: fastapi.Request) -> dict[str, bool]:
     return await auth.effective_permissions(request, path)
@@ -103,22 +121,24 @@ async def get_permissions_me(request: fastapi.Request) -> dict[str, bool]:
 async def delete_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
     assert isinstance(req["path"], str)
-    json_path: pathlib.Path = data_path / req["path"]
-    crdt_path: pathlib.Path = data_path / ".crdt" / f"{req['path']}.crdt"
-    workspace_files_path = ops.build_output_path(req["path"], "node -1").parent
-    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
-    json_path.unlink(missing_ok=True)
+    workspace_path: pathlib.Path = safely_inside(data_path, req["path"])
+    crdt_path: pathlib.Path = safely_inside(data_path / ".crdt", f"{req['path']}.crdt")
+    if workspace_paths.is_workspace_bundle(workspace_path):
+        shutil.rmtree(workspace_path)
+    else:
+        workspace_path.unlink()
     crdt_path.unlink(missing_ok=True)
-    if workspace_files_path.exists():
-        shutil.rmtree(workspace_files_path)
     crdt.delete_room(req["path"])
 
 
 @app.get("/api/node_output")
 async def get_node_output(workspace: str, node_id: str, version: int, request: fastapi.Request):
-    await auth.check_permission(request, "read", f"{workspace}.lynxkite.json")
-    json_path = data_path / ops.build_output_path(workspace, node_id)
-    assert json_path.is_relative_to(data_path), f"Path '{json_path}' is invalid"
+    await auth.check_permission(request, "read", workspace)
+    if not workspace_paths.is_workspace_bundle(workspace):
+        raise fastapi.HTTPException(status_code=404, detail="Output not found")
+    json_path = safely_inside(
+        data_path, data_path / workspace_paths.display_path(workspace, node_id)
+    )
     output = None
     if json_path.exists():
         with open(json_path, mode="r") as f:
@@ -134,10 +154,10 @@ class DirectoryEntry(pydantic.BaseModel):
 
 
 def _get_path_type(path: pathlib.Path) -> str:
-    if path.is_dir():
-        return "directory"
-    elif path.suffixes[-2:] == [".lynxkite", ".json"]:
+    if path.is_dir() and workspace_paths.is_workspace_bundle(path):
         return "workspace"
+    elif path.is_dir():
+        return "directory"
     else:
         return "file"
 
@@ -146,12 +166,11 @@ def _get_path_type(path: pathlib.Path) -> str:
 async def list_dir(path: str, request: fastapi.Request):
     await auth.check_permission(request, "read", path)
     user = await auth.get_current_user(request)
-    dir_path = data_path / path
-    assert dir_path.is_relative_to(data_path), f"Path '{dir_path}' is invalid"
+    dir_path = safely_inside(data_path, path)
     auth_on = auth.is_auth_enabled()
     entries: list[DirectoryEntry] = []
     for p in dir_path.iterdir():
-        if p.name.startswith(".") or p.name == SETTINGS_FILENAME:
+        if p.name.startswith(".") or p.name == folder_settings.SETTINGS_FILENAME:
             continue
         rel = p.relative_to(data_path).as_posix()
         if auth_on and not acl.has_permission(user, "read", rel):
@@ -160,11 +179,68 @@ async def list_dir(path: str, request: fastapi.Request):
     return sorted(entries, key=lambda x: (x.type != "directory", x.name.lower()))
 
 
+SEARCH_LIMIT = 20
+
+
+def _search_paths(query: str, user, auth_on: bool, limit: int) -> list[DirectoryEntry]:
+    matches = []
+    for root, dirs, files in os.walk(data_path):
+        # Hidden and "__" entries are not shown in the directory browser either.
+        dirs[:] = [d for d in dirs if not d.startswith((".", "__"))]
+        for name in dirs + files:
+            if name.startswith((".", "__")) or name == folder_settings.SETTINGS_FILENAME:
+                continue
+            p = pathlib.Path(root) / name
+            rel = p.relative_to(data_path).as_posix()
+            if query not in rel.lower():
+                continue
+            if auth_on and not acl.has_permission(user, "read", rel):
+                continue
+            matches.append(DirectoryEntry(name=rel, type=_get_path_type(p)))
+    matches.sort(key=lambda x: (x.type != "directory", x.name.lower()))
+    return matches[:limit]
+
+
+@app.get("/api/dir/search")
+async def search_dir(q: str, request: fastapi.Request, limit: int = SEARCH_LIMIT):
+    """Finds files and folders whose path contains `q`, ignoring case."""
+    user = await auth.get_current_user(request)
+    auth_on = auth.is_auth_enabled()
+    query = q.strip().lower()
+    if not query:
+        return []
+    # Walking the data directory can take a while. Do it off the event loop.
+    return await asyncio.to_thread(_search_paths, query, user, auth_on, limit)
+
+
+@app.get("/api/dir/get_local_settings")
+async def get_dir_settings(path: str, request: fastapi.Request):
+    await auth.check_permission(request, "read", path)
+    safely_inside(data_path, path)
+    settings = folder_settings.get_local_settings(data_path, path)
+    return settings
+
+
+@app.post("/api/dir/set_local_settings")
+async def set_local_settings(req: dict, request: fastapi.Request):
+    await auth.check_permission(request, "write", req["path"])
+    safely_inside(data_path, req["path"])
+    new_settings = folder_settings.FolderSettings.model_validate(req["settings"])
+    folder_settings.set_local_settings(data_path, req["path"], new_settings)
+    return {"status": "ok"}
+
+
+@app.get("/api/get_settings_schema")
+async def get_settings_schema(request: fastapi.Request):
+    await auth.check_permission(request, "read", "")
+    schema = folder_settings.get_settings_schema()
+    return schema
+
+
 @app.post("/api/dir/mkdir")
 async def make_dir(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
-    path = data_path / req["path"]
-    assert path.is_relative_to(data_path), f"Path '{path}' is invalid"
+    path = safely_inside(data_path, req["path"])
     assert not path.exists(), f"{path} already exists"
     path.mkdir()
 
@@ -172,10 +248,8 @@ async def make_dir(req: dict, request: fastapi.Request):
 @app.post("/api/dir/delete")
 async def delete_dir(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["path"])
-    path: pathlib.Path = data_path / req["path"]
-    assert all([path.is_relative_to(data_path), path.exists(), path.is_dir()]), (
-        f"Path '{path}' is invalid"
-    )
+    path: pathlib.Path = safely_inside(data_path, req["path"])
+    assert all([path.exists(), path.is_dir()]), f"Path '{path}' is invalid"
     shutil.rmtree(path)
 
 
@@ -183,16 +257,15 @@ async def delete_dir(req: dict, request: fastapi.Request):
 async def rename_path(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "write", req["old_path"])
     await auth.check_permission(request, "write", req["new_path"])
-    old_path: pathlib.Path = data_path / req["old_path"]
-    new_path: pathlib.Path = data_path / req["new_path"]
-    assert old_path.is_relative_to(data_path), f"Path '{old_path}' is invalid"
-    assert new_path.is_relative_to(data_path), f"Path '{new_path}' is invalid"
+    old_path: pathlib.Path = safely_inside(data_path, req["old_path"])
+    new_path: pathlib.Path = safely_inside(data_path, req["new_path"])
     assert old_path.exists(), f"Path '{old_path}' does not exist"
     assert not new_path.exists(), f"Path '{new_path}' already exists"
     old_rel = req["old_path"]
     old_path.rename(new_path)
     # Drop any open room under the old name so clients don't keep stale pointers.
     crdt.delete_room(old_rel)
+    (data_path / ".crdt" / f"{old_rel}.crdt").unlink(missing_ok=True)
 
 
 @app.get("/api/service/{module_path:path}")
@@ -211,7 +284,7 @@ async def service_post(req: fastapi.Request, module_path: str):
     return await module.api_service_post(req)
 
 
-def safely_inside(base: pathlib.Path, relative: str) -> pathlib.Path:
+def safely_inside(base: pathlib.Path, relative: str | pathlib.Path) -> pathlib.Path:
     path = base / relative
     path_r = path.resolve()
     base_r = base.resolve()
@@ -247,8 +320,18 @@ async def download(req: dict, request: fastapi.Request):
     """Sends a file from DATA_PATH to the client."""
     await auth.check_permission(request, "read", req["path"])
     file_path = safely_inside(data_path, req["path"])
-    if not file_path.exists() or not file_path.is_file():
+    if not file_path.exists():
         raise fastapi.HTTPException(status_code=404, detail="File not found")
+    if file_path.is_dir():
+        zip_path = pathlib.Path(
+            shutil.make_archive(file_path.stem, "zip", file_path.parent, file_path.name)
+        )
+        return fastapi.responses.FileResponse(
+            zip_path,
+            filename=zip_path.name,
+            background=starlette.background.BackgroundTask(zip_path.unlink),
+        )
+
     return fastapi.responses.FileResponse(file_path)
 
 
@@ -258,7 +341,11 @@ async def export_workspace(req: dict, request: fastapi.Request):
     await auth.check_permission(request, "read", req["path"])
     workspace_path = pathlib.Path(req["path"])
     file_path = safely_inside(data_path, req["path"])
-    if not file_path.exists() or not file_path.is_file():
+    if (
+        not file_path.exists()
+        or not file_path.is_dir()
+        or not workspace_paths.is_workspace_bundle(file_path)
+    ):
         raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as f:
         zip_path = pathlib.Path(f.name)
@@ -279,6 +366,8 @@ async def export_workspace(req: dict, request: fastapi.Request):
 async def execute_workspace(name: str, req: fastapi.Request):
     """Trigger and await the execution of a workspace."""
     await auth.check_permission(req, "write", name)
+    if not workspace_paths.is_workspace_bundle(name):
+        raise fastapi.HTTPException(status_code=404, detail="Workspace not found")
     room = await crdt.get_room(name)
     ws_pyd = workspace.Workspace.model_validate(room.ws.to_py())
     await crdt.execute(name, room.ws, ws_pyd)

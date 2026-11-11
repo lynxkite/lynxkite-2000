@@ -1,11 +1,15 @@
-"""Folder-level ACL for LynxKite authorization, stored in settings.yaml."""
+"""Folder-level ACL for LynxKite authorization, stored in settings.yaml.
+
+Used when auth is on. Requests with no token are treated as anonymous. A * matches any logged in user.
+For guest-read / staff-write, use read: [anonymous, *] and write: [*].
+"""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Literal
 
-from lynxkite_core.folder_settings import resolve_flat_section
+from lynxkite_core.folder_settings import get_total_settings, ACLSettings
 
 type User = dict[str, str | list[str]]
 type Action = Literal["read", "write"]
@@ -39,12 +43,14 @@ def user_principals(user: User) -> set[str]:
     """Build ACL principal IDs from JWT claims.
 
     Returns ``sub:<subject>`` for the user ID and ``group:<name>`` for each group
-    claim. These match entries in ``settings.yaml`` ``acl.read`` / ``acl.write``.
+    claim. Unauthenticated users get ``anonymous``.
     """
     principals: set[str] = set()
     sub = user.get("sub")
     if sub:
         principals.add(f"sub:{sub}")
+    else:
+        principals.add("anonymous")
     groups = user.get("groups")
     if isinstance(groups, str):
         groups = [groups]
@@ -54,15 +60,15 @@ def user_principals(user: User) -> set[str]:
     return principals
 
 
-def resolve_acl(path: str | None) -> dict[str, list[str]]:
+def resolve_acl(path: str | None) -> ACLSettings:
     """Effective acl.read / acl.write lists from settings.yaml root→folder merge."""
-    section = resolve_flat_section(_data_root, path or "", "acl")
-    return {"read": section.get("read", []), "write": section.get("write", [])}
+    settings = get_total_settings(_data_root, path or "")
+    return settings.acl
 
 
 def _matches(allowed: list[str], principals: set[str], *, authenticated: bool) -> bool:
-    if "*" in allowed:
-        return authenticated
+    if authenticated and "*" in allowed:
+        return True
     return bool(principals & set(allowed))
 
 
@@ -73,10 +79,10 @@ def has_permission(user: User, action: Action, path: str | None) -> bool:
     principals = user_principals(user)
     authenticated = bool(user.get("sub"))
     if action == "write":
-        return _matches(grants["write"], principals, authenticated=authenticated)
+        return _matches(grants.write, principals, authenticated=authenticated)
     # write implies read
-    return _matches(grants["read"], principals, authenticated=authenticated) or _matches(
-        grants["write"], principals, authenticated=authenticated
+    return _matches(grants.read, principals, authenticated=authenticated) or _matches(
+        grants.write, principals, authenticated=authenticated
     )
 
 

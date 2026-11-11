@@ -1,0 +1,2763 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "Import Parquet 1 Train/test split 1",
+      "source": "Import Parquet 1",
+      "sourceHandle": "output",
+      "target": "Train/test split 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train/test split 1 Define model 1",
+      "source": "Train/test split 1",
+      "sourceHandle": "output",
+      "target": "Define model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Model inference 1 View tables 1",
+      "source": "Model inference 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Model inference 1 View vectors 1",
+      "source": "Model inference 1",
+      "sourceHandle": "output",
+      "target": "View vectors 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Define model 1 output Train model 1 bundle",
+      "source": "Define model 1",
+      "sourceHandle": "output",
+      "target": "Train model 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 1 output Model inference 1 bundle",
+      "source": "Train model 1",
+      "sourceHandle": "output",
+      "target": "Model inference 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Train model 1 output View loss 1 bundle",
+      "source": "Train model 1",
+      "sourceHandle": "output",
+      "target": "View loss 1",
+      "targetHandle": "bundle"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Train/test split",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "table_name": {
+              "default": null,
+              "name": "table_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "test_ratio": {
+              "default": 0.1,
+              "name": "test_ratio",
+              "type": {
+                "type": "<class 'float'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "table_name": "records",
+          "test_ratio": 0.1
+        },
+        "status": "done",
+        "title": "Train/test split"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train/test split",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "seed": "12345",
+          "table_name": "records",
+          "test_ratio": "0.3"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Train/test split"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 320.0,
+      "id": "Train/test split 1",
+      "parentId": null,
+      "position": {
+        "x": 920.0,
+        "y": 240.0
+      },
+      "type": "basic",
+      "width": 360.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "input_metadata": [],
+        "meta": {
+          "inputs": {},
+          "name": "Import Parquet",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "filename": {
+              "default": null,
+              "name": "filename",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "filename": "uploads/plus-one-dataset.parquet"
+        },
+        "status": "done",
+        "title": "Import Parquet"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "File operations > Import Parquet",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "params": {
+          "filename": "uploads/plus-one-dataset.parquet"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Import Parquet"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 240.0,
+      "id": "Import Parquet 1",
+      "parentId": null,
+      "position": {
+        "x": 920.0,
+        "y": -40.0
+      },
+      "type": "basic",
+      "width": 360.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Define model",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "model_workspace": {
+              "default": null,
+              "name": "model_workspace",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "save_as": {
+              "default": "model",
+              "name": "save_as",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "model_workspace": "Basic examples/Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "title": "Define model"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              }
+            },
+            "other": {},
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Define model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "model_workspace": "Basic examples/Model definition",
+          "save_as": "model"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Define model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 240.0,
+      "id": "Define model 1",
+      "parentId": null,
+      "position": {
+        "x": 920.0,
+        "y": 600.0
+      },
+      "type": "basic",
+      "width": 360.0
+    },
+    {
+      "_data": {
+        "__execution_delay": 0.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Output_1_x",
+                    "Input__tensor_3_output"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "Model inference",
+          "outputs": {
+            "output": {
+              "name": "output",
+              "position": "right",
+              "type": {
+                "type": "None"
+              }
+            }
+          },
+          "params": {
+            "input_mapping": {
+              "default": null,
+              "name": "input_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelInferenceInputMapping'>"
+              }
+            },
+            "model_name": {
+              "default": "model",
+              "name": "model_name",
+              "type": {
+                "type": "<class 'str'>"
+              }
+            },
+            "output_mapping": {
+              "default": null,
+              "name": "output_mapping",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.lynxkite_ops.ModelOutputMapping'>"
+              }
+            }
+          },
+          "type": "basic"
+        },
+        "params": {
+          "input_mapping": "{\"map\":{\"Input__tensor_1_output\":{\"records\":\"records_test\",\"column\":\"x\"}}}",
+          "model_name": "model",
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"records\":\"records_test\",\"column\":\"pred\"}}}"
+        },
+        "status": "done",
+        "title": "Model inference"
+      },
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Model inference",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "prediction",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "batch_size": "8",
+          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"records_test\",\"column_name\":\"x\"}}}",
+          "model_name": "model",
+          "output_mapping": "{\"map\":{\"Output_1_x\":{\"table_name\":\"records_test\",\"column\":\"prediction\"}}}"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Model inference"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 640.0,
+      "id": "Model inference 1",
+      "parentId": null,
+      "position": {
+        "x": 1920.0,
+        "y": -120.0
+      },
+      "type": "basic",
+      "width": 360.0
+    },
+    {
+      "_data": {
+        "collapsed": false,
+        "display": {
+          "series": [
+            {
+              "data": [
+                5.194248676300049,
+                4.732226848602295,
+                4.301504611968994,
+                3.9289824962615967,
+                3.6416826248168945,
+                3.4493889808654785,
+                3.339247703552246,
+                3.2848846912384033,
+                3.2611656188964844,
+                3.251643180847168,
+                3.2479231357574463,
+                3.2463886737823486,
+                3.245635986328125,
+                3.245159149169922,
+                3.2447798252105713,
+                3.2444353103637695,
+                3.2441060543060303,
+                3.2437832355499268,
+                3.243464469909668,
+                3.243149518966675,
+                3.2428362369537354,
+                3.242525339126587,
+                3.2422165870666504,
+                3.241910457611084,
+                3.2416069507598877,
+                3.2413055896759033,
+                3.2410058975219727,
+                3.240708112716675,
+                3.2404117584228516,
+                3.2401177883148193,
+                3.239825487136841,
+                3.239534616470337,
+                3.239245653152466,
+                3.2389581203460693,
+                3.238672971725464,
+                3.238389015197754,
+                3.2381069660186768,
+                3.237826108932495,
+                3.2375471591949463,
+                3.237269878387451,
+                3.2369940280914307,
+                3.236720085144043,
+                3.2364470958709717,
+                3.236175775527954,
+                3.2359063625335693,
+                3.2356388568878174,
+                3.235372304916382,
+                3.235107183456421,
+                3.2348432540893555,
+                3.234581232070923,
+                3.2343204021453857,
+                3.2340610027313232,
+                3.233802556991577,
+                3.233546257019043,
+                3.233290910720825,
+                3.233036518096924,
+                3.2327840328216553,
+                3.2325327396392822,
+                3.232283115386963,
+                3.232034921646118,
+                3.2317872047424316,
+                3.2315409183502197,
+                3.2312965393066406,
+                3.231052875518799,
+                3.2308101654052734,
+                3.2305691242218018,
+                3.2303292751312256,
+                3.230090379714966,
+                3.2298526763916016,
+                3.2296159267425537,
+                3.2293803691864014,
+                3.2291462421417236,
+                3.228912591934204,
+                3.2286808490753174,
+                3.228449821472168,
+                3.228219985961914,
+                3.2279903888702393,
+                3.2277631759643555,
+                3.22753643989563,
+                3.2273104190826416,
+                3.2270853519439697,
+                3.2268614768981934,
+                3.226637363433838,
+                3.2264153957366943,
+                3.2261929512023926,
+                3.2259714603424072,
+                3.2257511615753174,
+                3.2255313396453857,
+                3.2253129482269287,
+                3.225095272064209,
+                3.224879264831543,
+                3.224663734436035,
+                3.2244486808776855,
+                3.2242350578308105,
+                3.224022388458252,
+                3.223810911178589,
+                3.223599672317505,
+                3.2233896255493164,
+                3.2231807708740234,
+                3.2229726314544678,
+                3.222764730453491,
+                3.2225584983825684,
+                3.2223527431488037,
+                3.2221477031707764,
+                3.2219433784484863,
+                3.2217350006103516,
+                3.2210605144500732,
+                3.2179861068725586,
+                3.1490979194641113,
+                2.5611555576324463,
+                2.1667709350585938,
+                1.941397786140442,
+                1.8211313486099243,
+                1.7602094411849976,
+                1.7300406694412231,
+                1.7150671482086182,
+                1.707504153251648,
+                1.703554630279541,
+                1.7013800144195557,
+                1.7000809907913208,
+                1.6992148160934448,
+                1.6985713243484497,
+                1.6980407238006592,
+                1.6975696086883545,
+                1.6971304416656494,
+                1.69670832157135,
+                1.696295976638794,
+                1.6958922147750854,
+                1.6954957246780396,
+                1.6951044797897339,
+                1.6947181224822998,
+                1.694334626197815,
+                1.6939517259597778,
+                1.6935737133026123,
+                1.6931995153427124,
+                1.6928293704986572,
+                1.6924631595611572,
+                1.6921008825302124,
+                1.6917426586151123,
+                1.6913865804672241,
+                1.6910340785980225,
+                1.690685510635376,
+                1.690340518951416,
+                1.6899985074996948,
+                1.689659595489502,
+                1.6893242597579956,
+                1.6889920234680176,
+                1.6886632442474365,
+                1.688332438468933,
+                1.6879974603652954,
+                1.6876615285873413,
+                1.687328815460205,
+                1.6869547367095947,
+                1.6862459182739258,
+                1.6816266775131226,
+                1.5337661504745483,
+                0.8366889357566833,
+                0.46365517377853394,
+                0.2645129859447479,
+                0.16432315111160278,
+                0.11595670133829117,
+                0.09297489374876022,
+                0.08202926814556122,
+                0.07672866433858871,
+                0.07407510280609131,
+                0.07266353815793991,
+                0.07183551043272018,
+                0.07128453254699707,
+                0.07086450606584549,
+                0.07050899416208267,
+                0.0701858326792717,
+                0.06987988203763962,
+                0.0695839673280716,
+                0.06929467618465424,
+                0.06901033222675323,
+                0.0687265694141388,
+                0.0684463381767273,
+                0.06816895306110382,
+                0.06789495050907135,
+                0.0676238089799881,
+                0.06735056638717651,
+                0.06708052009344101,
+                0.06681209057569504,
+                0.06654231995344162,
+                0.06627301871776581,
+                0.06600192189216614,
+                0.06573258340358734,
+                0.06545879691839218,
+                0.06518517434597015,
+                0.06490959227085114,
+                0.06463567167520523,
+                0.0643647089600563,
+                0.06409519165754318,
+                0.06382837891578674,
+                0.06356203556060791,
+                0.06330081075429916,
+                0.06304193288087845,
+                0.06278356909751892,
+                0.06252720952033997,
+                0.06227334961295128,
+                0.06202361360192299,
+                0.0617777444422245,
+                0.06153156980872154,
+                0.061283886432647705,
+                0.061029158532619476,
+                0.06077418848872185,
+                0.060523588210344315,
+                0.06027815118432045,
+                0.06003476679325104,
+                0.059792377054691315,
+                0.059549830853939056,
+                0.05930154025554657,
+                0.05905551835894585,
+                0.05881192907691002,
+                0.0585709884762764,
+                0.05833115428686142,
+                0.05809348449110985,
+                0.0578579381108284,
+                0.05762450024485588,
+                0.05739405006170273,
+                0.05716623365879059,
+                0.056934017688035965,
+                0.05670491233468056,
+                0.05647972598671913,
+                0.05625642091035843,
+                0.05603497847914696,
+                0.05581538379192352,
+                0.05559813603758812,
+                0.05538330227136612,
+                0.055170174688100815,
+                0.054959800094366074,
+                0.05475304275751114,
+                0.054547909647226334,
+                0.05434436723589897,
+                0.05414241552352905,
+                0.053942013531923294,
+                0.053743164986371994,
+                0.05354584753513336,
+                0.05335003510117531,
+                0.05315623804926872,
+                0.05296580120921135,
+                0.052776746451854706,
+                0.052589051425457,
+                0.05240271985530853,
+                0.05221769958734512,
+                0.05203401669859886,
+                0.05185163766145706,
+                0.05167055502533913,
+                0.05149075761437416,
+                0.05131221190094948,
+                0.051134925335645676,
+                0.05095922574400902,
+                0.05078546702861786,
+                0.05061294883489609,
+                0.05044237896800041,
+                0.050274644047021866,
+                0.05010804161429405,
+                0.04994256794452667,
+                0.049778200685977936,
+                0.04961492121219635,
+                0.049452755600214005,
+                0.04929284378886223,
+                0.04913467913866043,
+                0.04897753894329071,
+                0.04882141575217247,
+                0.04866630584001541,
+                0.04851251095533371,
+                0.04836169257760048,
+                0.04821375384926796,
+                0.04806669428944588,
+                0.04792052507400513,
+                0.04777522012591362,
+                0.04763077199459076,
+                0.04748716205358505,
+                0.047344379127025604,
+                0.04720241203904152,
+                0.04706142097711563,
+                0.04692186415195465,
+                0.04678306728601456,
+                0.04664503037929535,
+                0.04650787264108658,
+                0.04637163504958153,
+                0.046236440539360046,
+                0.04610292613506317,
+                0.04597007483243942,
+                0.045837946236133575,
+                0.04570755362510681,
+                0.04557782784104347,
+                0.04544825479388237,
+                0.0453183650970459,
+                0.045189570635557175,
+                0.04506213217973709,
+                0.04493529349565506,
+                0.044809043407440186,
+                0.044683389365673065,
+                0.04455830156803131,
+                0.04443386197090149,
+                0.04431009292602539,
+                0.04418685659766197,
+                0.04406414180994034,
+                0.043941959738731384,
+                0.043820276856422424,
+                0.04369909688830376,
+                0.043578337877988815,
+                0.04345747083425522,
+                0.04333708435297012,
+                0.04321715980768204,
+                0.04309769719839096,
+                0.0429786778986454,
+                0.04286010563373566,
+                0.04274197295308113,
+                0.042624276131391525,
+                0.042507000267505646,
+                0.04239014536142349,
+                0.04227370768785477,
+                0.042157672345638275,
+                0.042042046785354614,
+                0.04192682355642319,
+                0.0418119840323925,
+                0.041697535663843155,
+                0.04158347100019455,
+                0.04146978259086609,
+                0.041356466710567474,
+                0.041243527084589005,
+                0.041130952537059784,
+                0.04101872816681862,
+                0.040906865149736404,
+                0.04079534858465195,
+                0.04068418964743614,
+                0.0405733622610569,
+                0.040462885051965714,
+                0.04035273939371109,
+                0.04024292156100273,
+                0.040133725851774216,
+                0.040025271475315094,
+                0.03991713374853134,
+                0.03980930522084236,
+                0.039701659232378006,
+                0.039593927562236786,
+                0.039486486464738846,
+                0.03937936946749687,
+                0.039272651076316833,
+                0.039166223257780075,
+                0.039060063660144806,
+                0.038954153656959534,
+                0.0388483963906765,
+                0.038742903620004654,
+                0.0386376827955246,
+                0.03853272274136543,
+                0.03842802718281746,
+                0.03832358866930008,
+                0.03821941092610359,
+                0.0381154865026474,
+                0.038011811673641205,
+                0.0379084013402462,
+                0.037805236876010895,
+                0.03770232945680618,
+                0.03759966045618057,
+                0.037497248500585556,
+                0.03739452734589577,
+                0.03729122132062912,
+                0.03718816488981247,
+                0.03708536550402641,
+                0.03698281571269035,
+                0.03688051551580429,
+                0.036778464913368225,
+                0.03667666018009186,
+                0.03657510131597519,
+                0.03647379204630852,
+                0.036372724920511246,
+                0.03627190366387367,
+                0.036171332001686096,
+                0.036071084439754486,
+                0.03597136586904526,
+                0.03587188571691513,
+                0.03577264025807381,
+                0.035673633217811584,
+                0.03557485342025757,
+                0.03547630459070206,
+                0.03537798300385475,
+                0.035279903560876846,
+                0.035182058811187744,
+                0.03508443757891655,
+                0.03498705103993416,
+                0.034889888018369675,
+                0.034792978316545486,
+                0.03469628840684891,
+                0.03459983691573143,
+                0.034503620117902756,
+                0.034407634288072586,
+                0.03431188315153122,
+                0.034216366708278656,
+                0.0341210775077343,
+                0.03402603417634964,
+                0.033931225538253784,
+                0.03383665531873703,
+                0.03374231979250908,
+                0.03364821895956993,
+                0.033554356545209885,
+                0.03346073254942894,
+                0.03336735814809799,
+                0.033274225890636444,
+                0.0331813283264637,
+                0.03308868035674095,
+                0.03299626335501671,
+                0.03290409594774246,
+                0.032812174409627914,
+                0.032720498740673065,
+                0.032629065215587616,
+                0.03253787383437157,
+                0.03244693577289581,
+                0.03235623985528946,
+                0.032265804708004,
+                0.03217560797929764,
+                0.03208566829562187,
+                0.03199596703052521,
+                0.03190653398633003,
+                0.031817350536584854,
+                0.031728409230709076,
+                0.03163974732160568,
+                0.03155132010579109,
+                0.03146316111087799,
+                0.03137525916099548,
+                0.03128761053085327,
+                0.031200233846902847,
+                0.03111310862004757,
+                0.031026242300868034,
+                0.030939649790525436,
+                0.030853310599923134,
+                0.030767245218157768,
+                0.030681440606713295,
+                0.03059590980410576,
+                0.030510643497109413,
+                0.03042564168572426,
+                0.030340921133756638,
+                0.03025646135210991,
+                0.030172280967235565,
+                0.03008836880326271,
+                0.030004747211933136,
+                0.029921378940343857,
+                0.029838303104043007,
+                0.029755493625998497,
+                0.029672972857952118,
+                0.029590733349323273,
+                0.029508762061595917,
+                0.029427088797092438,
+                0.029345687478780746,
+                0.029264571145176888,
+                0.02918374352157116,
+                0.029103199020028114,
+                0.02902294509112835,
+                0.028942979872226715,
+                0.028863299638032913,
+                0.02878391183912754,
+                0.02870481088757515,
+                0.028626007959246635,
+                0.028547491878271103,
+                0.028469275683164597,
+                0.02839135006070137,
+                0.02831372618675232,
+                0.02823638916015625,
+                0.028159350156784058,
+                0.02808261476457119,
+                0.0280061773955822,
+                0.027930041775107384,
+                0.027854204177856445,
+                0.027778668329119682,
+                0.027703437954187393,
+                0.02762851119041443,
+                0.02755388431251049,
+                0.027479562908411026,
+                0.027405548840761185,
+                0.027331842109560966,
+                0.027258435264229774,
+                0.02718534506857395,
+                0.027112558484077454,
+                0.02704007923603058,
+                0.026967914775013924,
+                0.026896055787801743,
+                0.02682451158761978,
+                0.026753274723887444,
+                0.026682356372475624,
+                0.02661174349486828,
+                0.0265414509922266,
+                0.026471465826034546,
+                0.02640179730951786,
+                0.026332441717386246,
+                0.0262634065002203,
+                0.026194684207439423,
+                0.026126278564333916,
+                0.02605818584561348,
+                0.025990411639213562,
+                0.025922955945134163,
+                0.025855818763375282,
+                0.02578899636864662,
+                0.025722496211528778,
+                0.025656312704086304,
+                0.02559044398367405,
+                0.02552489936351776,
+                0.02545967325568199,
+                0.02539476379752159
+              ],
+              "type": "line"
+            }
+          ],
+          "title": {
+            "text": "Training loss"
+          },
+          "xAxis": {
+            "type": "category"
+          },
+          "yAxis": {
+            "type": "value"
+          }
+        },
+        "input_metadata": [
+          {
+            "dataframes": {
+              "df": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_test": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "df_train": {
+                "columns": [
+                  "x",
+                  "y"
+                ]
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ]
+              }
+            },
+            "other": {
+              "model": {
+                "model": {
+                  "inputs": [
+                    "Input__tensor_1_output"
+                  ],
+                  "loss_inputs": [
+                    "Output_1_x",
+                    "Input__tensor_3_output"
+                  ],
+                  "outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "meta": {
+          "inputs": {
+            "bundle": {
+              "name": "bundle",
+              "position": "left",
+              "type": {
+                "type": "<class 'lynxkite_graph_analytics.core.Bundle'>"
+              }
+            }
+          },
+          "name": "View loss",
+          "outputs": {},
+          "params": {},
+          "type": "visualization"
+        },
+        "params": {},
+        "status": "done",
+        "title": "View loss"
+      },
+      "data": {
+        "collapsed": false,
+        "display": null,
+        "display_version": 10,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > View loss",
+        "output_metadata": [
+          {}
+        ],
+        "params": {},
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View loss"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 480.0,
+      "id": "View loss 1",
+      "parentId": null,
+      "position": {
+        "x": 1880.0,
+        "y": 600.0
+      },
+      "type": "visualization",
+      "width": 520.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 10,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "prediction",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "df_test": true,
+            "records": false,
+            "records_test": false,
+            "records_train": false,
+            "training": false
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 636.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 2560.0,
+        "y": -120.0
+      },
+      "type": "table_view",
+      "width": 603.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": 29,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "prediction",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > View vectors",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "label_column": "index",
+          "min_dist": "1",
+          "n_neighbors": "10",
+          "table_name": "records_test",
+          "vector_column": "prediction"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View vectors"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 480.0,
+      "id": "View vectors 1",
+      "parentId": null,
+      "position": {
+        "x": 2560.0,
+        "y": 600.0
+      },
+      "type": "visualization",
+      "width": 600.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": false
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Machine learning operations > Train model",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "records": {
+                "columns": [
+                  "x",
+                  "y"
+                ],
+                "key": "records",
+                "length": 100.0
+              },
+              "records_test": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_test",
+                "length": 30.0
+              },
+              "records_train": {
+                "columns": [
+                  "index",
+                  "x",
+                  "y"
+                ],
+                "key": "records_train",
+                "length": 70.0
+              },
+              "training": {
+                "columns": [
+                  "training_loss"
+                ],
+                "key": "training",
+                "length": 10.0
+              }
+            },
+            "other": {
+              "model": {
+                "key": "model",
+                "model": {
+                  "input_handlers": {
+                    "Input__tensor_1_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "Y",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "Y",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    },
+                    "Input__tensor_2_input": {
+                      "categories": [],
+                      "color": "orange",
+                      "doc": [
+                        {
+                          "kind": "text",
+                          "value": "Args:\n    table_name: One column of this table will be used as input.\n    column_name: The name of the column to use as input."
+                        }
+                      ],
+                      "icon": null,
+                      "id": "X",
+                      "inputs": [
+                        {
+                          "name": "b",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.bundle.Bundle'>"
+                          }
+                        },
+                        {
+                          "name": "ctx",
+                          "position": "left",
+                          "type": {
+                            "type": "<class 'lynxkite_graph_analytics.pytorch.pytorch_core.InputContext'>"
+                          }
+                        }
+                      ],
+                      "name": "X",
+                      "outputs": [
+                        {
+                          "name": "output",
+                          "position": "right",
+                          "type": {
+                            "type": "None"
+                          }
+                        }
+                      ],
+                      "params": [
+                        {
+                          "default": "",
+                          "name": "table_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].keys(@)[]"
+                          }
+                        },
+                        {
+                          "default": "",
+                          "name": "column_name",
+                          "type": {
+                            "format": "dropdown",
+                            "metadata_query": "[].dataframes[].<table_name>.columns[]"
+                          }
+                        }
+                      ],
+                      "placeholder_function_name": false,
+                      "python_function_name": "lynxkite_graph_analytics.pytorch.pytorch_ops.from_bundle",
+                      "tags": [],
+                      "type": "basic"
+                    }
+                  },
+                  "input_output_names": {
+                    "Input__tensor_1_input": "Y",
+                    "Input__tensor_2_input": "X",
+                    "Output_1_x": "Output"
+                  },
+                  "loss_inputs": [
+                    "Input__tensor_1_input",
+                    "Output_1_x"
+                  ],
+                  "model_inputs": [
+                    "Input__tensor_2_input"
+                  ],
+                  "model_outputs": [
+                    "Output_1_x"
+                  ],
+                  "trained": true
+                },
+                "type": "pytorch-model"
+              }
+            },
+            "relations": []
+          }
+        ],
+        "params": {
+          "batch_size": "8",
+          "epochs": "10",
+          "input_mapping": "{\"map\":{\"Input__tensor_2_input\":{\"table_name\":\"records_train\",\"column_name\":\"x\"},\"Input__tensor_1_input\":{\"table_name\":\"records_train\",\"column_name\":\"y\"}}}",
+          "model_name": "model"
+        },
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Train model"
+      },
+      "dragHandle": ".drag-handle",
+      "height": 760.0,
+      "id": "Train model 1",
+      "parentId": null,
+      "position": {
+        "x": 1400.0,
+        "y": 80.0
+      },
+      "type": "basic",
+      "width": 360.0
+    }
+  ],
+  "paused": true
+}

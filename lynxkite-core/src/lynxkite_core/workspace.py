@@ -2,13 +2,14 @@
 
 import json
 import pathlib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Literal, Optional, TYPE_CHECKING
 import dataclasses
 import enum
 import os
 import pydantic
 import tempfile
 from . import ops
+from .workspace_paths import workspace_file_path
 
 if TYPE_CHECKING:
     import pycrdt
@@ -172,6 +173,11 @@ class WorkspaceExecutionContext:
     app: "fastapi.FastAPI | None"
 
 
+class WorkspaceAssistantMessage(BaseConfig):
+    role: Literal["system", "user", "assistant"]
+    content: str
+
+
 class Workspace(BaseConfig):
     """A workspace is a representation of a computational graph that consists of nodes and edges.
 
@@ -185,7 +191,7 @@ class Workspace(BaseConfig):
     nodes: list[WorkspaceNode] = dataclasses.field(default_factory=list)
     edges: list[WorkspaceEdge] = dataclasses.field(default_factory=list)
     paused: Optional[bool] = None
-    assistant_messages: Optional[list[dict]] = None
+    assistant_messages: Optional[list[WorkspaceAssistantMessage]] = None
     path: Optional[str] = None
     _crdt: Optional["pycrdt.Map"] = None
 
@@ -223,8 +229,8 @@ class Workspace(BaseConfig):
         return json.dumps(j, indent=2, sort_keys=True) + "\n"
 
     def save(self, path: str | pathlib.Path, from_frontend=False):
-        """Persist the workspace to a local file in JSON format."""
-        path = str(path)
+        """Persist the workspace to a .lynxkite bundle."""
+        path = str(workspace_file_path(path))
         j = self.model_dump_json_sorted()
         dirname, basename = os.path.split(path)
         if dirname:
@@ -248,19 +254,20 @@ class Workspace(BaseConfig):
         After loading the workspace, the metadata of the workspace is updated.
 
         Args:
-            path: The path to the file to load the workspace from.
+            path: The path to the .lynxkite bundle to load.
 
         Returns:
             Workspace: The loaded workspace object, with updated metadata.
         """
-        path = str(path)
-        with open(path, encoding="utf-8") as f:
+        workspace_path = pathlib.Path(path)
+        file_path = workspace_file_path(workspace_path)
+        with file_path.open(encoding="utf-8") as f:
             j = f.read()
-        ops.load_user_scripts(path)
+        ops.load_user_scripts(str(file_path))
         ws = Workspace.model_validate_json(j)
         # Metadata is added after loading. This way code changes take effect on old boxes too.
         ws.update_metadata()
-        ws.path = pathlib.Path(path).as_posix()
+        ws.path = workspace_path.as_posix()
         return ws
 
     def update_metadata(self):

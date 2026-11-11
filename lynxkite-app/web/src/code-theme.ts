@@ -1,6 +1,6 @@
 // A simple theme using the LynxKite colors.
 
-import type { editor } from "monaco-editor/esm/vs/editor/editor.api.js";
+import type { editor } from "monaco-editor";
 
 const theme: editor.IStandaloneThemeData = {
   base: "vs-dark",
