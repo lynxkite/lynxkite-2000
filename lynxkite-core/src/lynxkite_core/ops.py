@@ -233,7 +233,7 @@ class Result:
         path = pathlib.Path(display_path)
         if self.display is not None:
             path.parent.mkdir(parents=True, exist_ok=True)
-            display_json = to_json(self.display)
+            display_json = to_json(self.display) + b"\n"
             try:
                 with open(path, "r+b") as f:
                     old_display = f.read()
@@ -251,7 +251,6 @@ class Result:
             ) as f:
                 temp_name = f.name
                 f.write(display_json)
-                f.write(b"\n")
             os.replace(temp_name, path)
             self.display = None
             self.display_version = version + 1
