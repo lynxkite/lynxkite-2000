@@ -6,9 +6,9 @@ import asyncio
 import enum
 import functools
 import hashlib
-import json
 import importlib.util
 import inspect
+import json
 import os
 import pathlib
 import pkgutil
@@ -19,11 +19,12 @@ import traceback
 import types
 import typing
 from dataclasses import dataclass
+
 import pydantic
 from pydantic_core import to_json
+
 from .matplotlib_to_image import matplotlib_to_image
-from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
-from .workspace_paths import display_path
+from .opcontext import CONTEXT_PARAM_NAME, OpContext, find_ctx_param_name
 
 if typing.TYPE_CHECKING:
     from . import workspace

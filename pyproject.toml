@@ -44,6 +44,17 @@ members = [
     "lynxkite-vibe",
 ]
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ty.src]
+exclude = ["lynxkite-assistant/tests/files", "tmp"]
+
+[[tool.ty.overrides]]
+include = ["examples"]
+[tool.ty.overrides.rules]
+unused-ignore-comment = "ignore"
+
 [dependency-groups]
 dev = [
     "deptry>=0.23.0",
@@ -54,14 +65,8 @@ dev = [
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
-    "ty==0.0.96",
+    "ty==0.0.101",
 ]
 gpu = [
     "lynxkite-graph-analytics[gpu]",
 ]
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-
-[tool.ty.src]
-exclude = ["lynxkite-assistant/tests/files"]
