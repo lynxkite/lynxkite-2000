@@ -79,7 +79,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -126,7 +126,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -173,7 +173,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 2,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -487,7 +487,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 82,
+        "display_version": 1,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -904,13 +904,13 @@
         "output_metadata": [
           {
             "dataframes": {
-              "records": {
+              "results": {
                 "columns": [
                   "o",
                   "p",
                   "s"
                 ],
-                "key": "records",
+                "key": "results",
                 "length": 231.0
               }
             },
@@ -923,7 +923,7 @@
           "query": "SELECT ?s ?p ?o\nWHERE {?s ?p ?o}"
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "Local SPARQL query"
       },
@@ -941,19 +941,19 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 2,
+        "display_version": 4,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
           {
             "dataframes": {
-              "records": {
+              "results": {
                 "columns": [
                   "o",
                   "p",
                   "s"
                 ],
-                "key": "records",
+                "key": "results",
                 "length": 231.0
               }
             },
@@ -971,7 +971,7 @@
           "limit": 100.0
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "View tables"
       },
@@ -989,7 +989,7 @@
       "data": {
         "collapsed": null,
         "display": null,
-        "display_version": 1,
+        "display_version": 3,
         "error": null,
         "expanded_height": null,
         "input_metadata": [
@@ -1016,7 +1016,7 @@
             "relations": [
               {
                 "df": "edges",
-                "name": "rdf_graph",
+                "name": "edges",
                 "source_column": "subject",
                 "source_key": "id",
                 "source_table": "nodes",
@@ -1041,7 +1041,7 @@
           "limit": 100.0
         },
         "status": "done",
-        "tags": null,
+        "tags": [],
         "telemetry": null,
         "title": "View tables"
       },
