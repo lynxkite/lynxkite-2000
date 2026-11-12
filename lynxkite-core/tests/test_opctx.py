@@ -1,9 +1,32 @@
+from pathlib import Path
+
 import pytest
-from lynxkite_core import ops
+from lynxkite_core import ops, workspace
 
 DummyContext = ops.OpContext(
     op=None
 )  # For testing the op decorator without needing a full execution context.
+
+
+def test_get_box_dir_for_relative_workspace_path(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    ws = workspace.Workspace(path="analysis.lynxkite")
+    node = ws.add_node(id="node-1", title="Node")
+
+    path = ops.OpContext(node=node, ws=ws).get_box_dir("artifacts")
+
+    assert path == Path("analysis.lynxkite/node_data/node-1/artifacts")
+    assert path.is_dir()
+
+
+@pytest.mark.parametrize("subdir", ["../outside", "/tmp/outside"])
+def test_get_box_dir_rejects_paths_outside_box(tmp_path, monkeypatch, subdir):
+    monkeypatch.chdir(tmp_path)
+    ws = workspace.Workspace(path="analysis.lynxkite")
+    node = ws.add_node(id="node-1", title="Node")
+
+    with pytest.raises(ValueError, match="relative path"):
+        ops.OpContext(node=node, ws=ws).get_box_dir(subdir)
 
 
 def test_annotated_opcontext_excluded_from_inputs():

@@ -13,6 +13,7 @@ import deepagents
 from deepagents import backends
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
+from lynxkite_core.workspace_paths import workspace_data_dir
 from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
 
 ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
@@ -147,9 +148,7 @@ async def assistant_stream(
     routes = {
         "/skills/": backends.FilesystemBackend(root_dir=skill_root, virtual_mode=True)
     }
-    workspace_files_path = (
-        Path(req.workspace).parent / ".workspace_files" / Path(req.workspace).name
-    )
+    workspace_files_path = workspace_data_dir(req.workspace)
     if workspace_files_path.exists():
         routes["/workspace_files/"] = backends.FilesystemBackend(
             root_dir=str(workspace_files_path), virtual_mode=True

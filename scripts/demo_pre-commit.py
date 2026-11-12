@@ -7,7 +7,7 @@ import os
 import sys
 from pathlib import Path
 
-from lynxkite_core import ops, workspace
+from lynxkite_core import ops, workspace, workspace_paths
 
 ops.detect_plugins()
 parser = argparse.ArgumentParser()
@@ -30,8 +30,6 @@ args = parser.parse_args()
 
 
 def check_demo_ws(ws_path: Path, rerun: bool):
-    parent_dir = ws_path.parent
-    ws_name = ws_path.name
     try:
         ws = workspace.Workspace.load(ws_path)
     except Exception as e:
@@ -40,8 +38,7 @@ def check_demo_ws(ws_path: Path, rerun: bool):
     if not ws.paused:
         ws.paused = True
         changed_ws = True
-    if not (parent_dir / ".workspace_files" / ws_name).exists():
-        os.makedirs(parent_dir / ".workspace_files" / ws_name, exist_ok=True)
+    workspace_paths.workspace_data_dir(ws_path).mkdir(parents=True, exist_ok=True)
     if ws.assistant_messages:
         ws.assistant_messages = []
         changed_ws = True
@@ -56,7 +53,7 @@ def check_demo_ws(ws_path: Path, rerun: bool):
                 "image",
                 "molecule",
             ]
-            and not (parent_dir / ".workspace_files" / ws_name / f"{node.id}.json").exists()
+            and not workspace_paths.display_path(ws_path, node.id).exists()
         ):
             missing_ws_files = True
     if missing_ws_files:
@@ -84,7 +81,8 @@ if __name__ == "__main__":
     ops.detect_plugins()
     errors = []
     for ws_file in args.filenames:
-        ws_path = Path(ws_file)
+        # From the "workspace.json" file go to the "MyWorkspace.lynxkite" directory.
+        ws_path = Path(ws_file).parent
         e = check_demo_ws(ws_path.relative_to(args.root_dir), args.rerun)
         if e:
             errors.append(e)

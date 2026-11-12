@@ -25,12 +25,12 @@ def test_get_total_settings_merges_parent_and_child(tmp_path: Path):
         encoding="utf-8",
     )
 
-    merged = get_total_settings(tmp_path, "heavy/ws.lynxkite.json")
+    merged = get_total_settings(tmp_path, "heavy/ws.lynxkite")
     assert merged.lim["Box A"] == LIMBoxConfig(memory="16Gi", cpu="2")
 
 
 def test_get_total_settings_missing_returns_defaults(tmp_path: Path):
-    assert get_total_settings(tmp_path, "ws.lynxkite.json") == FolderSettings()
+    assert get_total_settings(tmp_path, "ws.lynxkite") == FolderSettings()
 
 
 def test_get_total_settings_returns_typed_settings(tmp_path: Path):
@@ -38,7 +38,7 @@ def test_get_total_settings_returns_typed_settings(tmp_path: Path):
         yaml.dump({"lim": {"Box A": {"memory": "4Gi"}}}),
         encoding="utf-8",
     )
-    merged = get_total_settings(tmp_path, "ws.lynxkite.json")
+    merged = get_total_settings(tmp_path, "ws.lynxkite")
     assert isinstance(merged, FolderSettings)
     assert merged.lim["Box A"] == LIMBoxConfig(memory="4Gi")
 
@@ -61,7 +61,7 @@ def test_get_total_settings_merges_multiple_levels(tmp_path: Path):
         encoding="utf-8",
     )
 
-    merged = get_total_settings(tmp_path, "team/project/ws.lynxkite.json")
+    merged = get_total_settings(tmp_path, "team/project/ws.lynxkite")
     assert merged.lim["Box A"] == LIMBoxConfig(cpu="3", memory="8Gi")
 
 
@@ -84,7 +84,7 @@ def test_get_total_settings_keeps_boxes_isolated(tmp_path: Path):
         encoding="utf-8",
     )
 
-    merged = get_total_settings(tmp_path, "team/ws.lynxkite.json")
+    merged = get_total_settings(tmp_path, "team/ws.lynxkite")
     assert merged.lim["Box A"] == LIMBoxConfig(cpu="1")
     assert merged.lim["Box B"] == LIMBoxConfig(cpu="2", memory="16Gi")
 
@@ -117,7 +117,7 @@ def test_get_total_settings_merges_acl_parent_and_child(tmp_path: Path):
         encoding="utf-8",
     )
 
-    merged = get_total_settings(tmp_path, "team/ws.lynxkite.json")
+    merged = get_total_settings(tmp_path, "team/ws.lynxkite")
     assert merged.acl == ACLSettings(read=["*"], write=["group:Eng"])
 
 

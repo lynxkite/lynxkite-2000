@@ -14,7 +14,7 @@ async def main():
         command="python",
         args=[
             "lynxkite-mcp/src/lynxkite_mcp/assistant_mcp.py",
-            "examples/Basic examples/Airlines demo.lynxkite.json",
+            "examples/Basic examples/Airlines demo.lynxkite",
         ],
     )
 

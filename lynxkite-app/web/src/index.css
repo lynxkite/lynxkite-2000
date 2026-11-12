@@ -253,10 +253,9 @@ svg {
     }
   }
 
-  .user-menu-actions {
-    display: flex;
-    gap: 4px;
-    align-items: center;
+  .user-menu .dropdown-content {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
 
   .user-menu-button {
@@ -1534,10 +1533,14 @@ svg {
     font-weight: 500;
   }
 
-  .user-menu-button {
+  .user-menu {
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 50;
+  }
+
+  .user-menu-button {
     color: rgba(255, 255, 255, 0.8);
     background: rgba(255, 255, 255, 0.08);
 
@@ -2135,29 +2138,5 @@ svg {
 
   .msp-plugin .msp-layout-expanded {
     position: absolute !important;
-  }
-}
-
-.settings-popup-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.settings-popup {
-  background: white;
-  color: #123;
-  padding: 20px 28px;
-  border-radius: 10px;
-  min-width: 280px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  text-align: center;
-
-  h3 {
-    margin-top: 0;
   }
 }
