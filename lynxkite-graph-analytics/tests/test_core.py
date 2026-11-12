@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 from pydantic_core import to_json
 from lynxkite_core import ops, workspace
+from lynxkite_core.workspace_paths import display_path
 from lynxkite_graph_analytics.core import Bundle, execute
 
 
@@ -9,7 +10,7 @@ from lynxkite_graph_analytics.core import Bundle, execute
 @pytest.mark.parametrize("is_async", [False, True])
 async def test_visualization_display_is_saved_after_execution(tmp_path, view, is_async):
     env = "test_graph_display_saving"
-    display = {"display_value": 1}
+    display = {"display_value": "unset"}
 
     def sync_display_op():
         return display
@@ -20,12 +21,12 @@ async def test_visualization_display_is_saved_after_execution(tmp_path, view, is
     display_op = ops.op(env, "display", view=view)(
         async_display_op if is_async else sync_display_op
     )
-    ws_path = str(tmp_path / "example.lynxkite.json")
-    ws = workspace.Workspace(env=env, path=ws_path)
+    ws_path = tmp_path / "example.lynxkite"
+    ws = workspace.Workspace(env=env, path=str(ws_path))
     node = ws.add_node(display_op)
-    path = ops.build_output_path(ws_path, node.id)
+    path = display_path(ws_path, node.id)
 
-    for value, expected_version in [(1, 1), (1, 1), (2, 2)]:
+    for value, expected_version in [("A", 1), ("A", 1), ("B", 2)]:
         display["display_value"] = value
         await execute(ws)
 
@@ -38,7 +39,7 @@ async def test_visualization_display_is_saved_after_execution(tmp_path, view, is
         else:
             assert node.data.display is None
             assert node.data.display_version == expected_version
-            assert path.read_bytes() == to_json(display)
+            assert path.read_bytes().strip() == to_json(display)
 
 
 async def test_multi_input_box():

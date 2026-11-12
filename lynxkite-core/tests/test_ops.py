@@ -7,6 +7,7 @@ import joblib
 import pytest
 from lynxkite_core import ops, workspace
 from lynxkite_core.executors import one_by_one, simple
+from lynxkite_core.workspace_paths import display_path
 from pydantic_core import to_json
 
 DummyContext = ops.OpContext(
@@ -164,10 +165,10 @@ async def test_visualization_display_is_saved_after_execution(tmp_path, executor
         async_display_op if is_async else sync_display_op
     )
     executor.register(env)
-    ws_path = str(tmp_path / "example.lynxkite.json")
-    ws = workspace.Workspace(env=env, path=ws_path)
+    ws_path = tmp_path / "example.lynxkite"
+    ws = workspace.Workspace(env=env, path=str(ws_path))
     node = ws.add_node(display_op)
-    path = ops.build_output_path(ws_path, node.id)
+    path = display_path(ws_path, node.id)
 
     await ws.execute()
 
@@ -180,7 +181,7 @@ async def test_visualization_display_is_saved_after_execution(tmp_path, executor
     else:
         assert node.data.display is None
         assert node.data.display_version == 1
-        assert path.read_bytes() == to_json(display)
+        assert path.read_bytes().strip() == to_json(display)
 
 
 @pytest.mark.parametrize("executor", [simple, one_by_one])
@@ -192,14 +193,14 @@ async def test_async_visualization_errors_are_published(tmp_path, executor):
         raise ValueError("display failed")
 
     executor.register(env)
-    ws_path = str(tmp_path / "example.lynxkite.json")
-    ws = workspace.Workspace(env=env, path=ws_path)
+    ws_path = tmp_path / "example.lynxkite"
+    ws = workspace.Workspace(env=env, path=str(ws_path))
     node = ws.add_node(display_op)
 
     await ws.execute()
 
     assert node.data.error == "ValueError: display failed"
-    assert not ops.build_output_path(ws_path, node.id).exists()
+    assert not display_path(ws_path, node.id).exists()
 
 
 def test_detect_plugins_with_plugins():

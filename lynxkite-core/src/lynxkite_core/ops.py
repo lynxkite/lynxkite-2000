@@ -25,6 +25,7 @@ from pydantic_core import to_json
 
 from .matplotlib_to_image import matplotlib_to_image
 from .opcontext import CONTEXT_PARAM_NAME, OpContext, find_ctx_param_name
+from .workspace_paths import display_path
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -350,7 +351,8 @@ class Op(BaseConfig):
             and op_ctx.ws.path
         ):
             result.save_display(
-                op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
+                display_path(op_ctx.ws.path, op_ctx.node.id),
+                (op_ctx.node.data.display_version or 0),
             )
 
     def get_input(self, name: str):
