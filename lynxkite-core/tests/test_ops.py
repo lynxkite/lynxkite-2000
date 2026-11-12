@@ -255,17 +255,20 @@ def test_cache_function_sync_and_async():
 def test_save_display_keeps_version_when_display_is_unchanged(tmp_path):
     display_path = tmp_path / "ws.lynxkite" / "node_data" / "node-unchanged" / "display.json"
     display_path.parent.mkdir(parents=True, exist_ok=True)
+    display = {"k": "v", "n": 1}
     version = 11
-
-    expected = to_json({"k": "v", "n": 1})
-    display_path.write_bytes(expected)
-
-    result = ops.Result(display={"k": "v", "n": 1})
+    result = ops.Result(display=display)
     result.save_display(display_path, version)
-
+    version += 1  # Had no prior data.
     assert result.display is None
     assert result.display_version == version
-    assert display_path.read_bytes() == expected
+    assert display_path.read_bytes() == to_json(display) + b"\n"
+    result = ops.Result(display=display)
+    result.save_display(display_path, version)
+    # Version remains the same.
+    assert result.display is None
+    assert result.display_version == version
+    assert display_path.read_bytes() == to_json(display) + b"\n"
 
 
 def test_save_display_writes_file_and_increments_version(tmp_path):
