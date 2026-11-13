@@ -1,3 +1,4 @@
+# ty: ignore[abstract-class-instantiation, call-non-callable, incompatible-mutable-override]
 """Custom operations for the ODE+GNN model."""
 
 import itertools

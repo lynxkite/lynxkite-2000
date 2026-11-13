@@ -97,7 +97,7 @@ def test_update_metadata():
     assert ws.nodes[1].data.meta.name == "Unknown Operation"
     assert ws.nodes[1].data.meta.color == "red"
     assert ws.nodes[1].data.meta.icon == "x"
-    assert ws.nodes[1].data.error == "Unknown operation."
+    assert ws.nodes[1].data.error == "Unknown operation: Unknown Operation"
 
 
 def test_update_metadata_with_empty_workspace():

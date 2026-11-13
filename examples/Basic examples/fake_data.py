@@ -1,5 +1,5 @@
 from lynxkite_core.ops import op
-from faker import Faker  # ty: ignore
+from faker import Faker  # ty: ignore[import-not-found]
 import pandas as pd
 
 faker = Faker()

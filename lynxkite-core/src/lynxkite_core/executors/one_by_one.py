@@ -141,6 +141,8 @@ async def _execute(
                         break
                     result = op(op_ctx, *inputs, **params)
                     output = await _await_if_needed(result.output)
+                    result.display = await _await_if_needed(result.display)
+                    op.save_display(result, op_ctx)
                 except Exception as e:
                     traceback.print_exc()
                     node.publish_error(e)
@@ -158,8 +160,6 @@ async def _execute(
                     await mount_gradio(ctx.app, result.output, url)
                     result.display = {"backend": urllib.parse.quote(url)}
                     result.output = None
-                if result.display:
-                    result.display = await _await_if_needed(result.display)
                 for edge in edges[node.id]:
                     t = nodes[edge.target]
                     op = catalog[t.data.op_id]

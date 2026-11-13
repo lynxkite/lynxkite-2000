@@ -15,8 +15,7 @@ SETTINGS_FILENAME = "settings.yaml"
 
 
 class BaseModel(pydantic.BaseModel):
-    class Config:
-        extra = "ignore"
+    model_config = pydantic.config.ConfigDict(extra="ignore")
 
 
 class ACLSettings(BaseModel):

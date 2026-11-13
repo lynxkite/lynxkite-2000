@@ -1,38 +1,32 @@
+# ty: ignore[not-subscriptable, invalid-assignment, invalid-argument-type]
 """Visualizations."""
 
-from lynxkite_core import ops
-
-from lynxkite_graph_analytics import core, bundle
 import matplotlib.cm
 import matplotlib.colors
 import networkx as nx
 import pandas as pd
-
+from lynxkite_core import ops
+from lynxkite_graph_analytics import bundle, core
 
 op = ops.op_registration(core.ENV)
 
 
-def _map_color(value):
+def _map_color(value: pd.Series):
     if pd.api.types.is_numeric_dtype(value):
         cmap = matplotlib.cm.get_cmap("viridis")
         value = (value - value.min()) / (value.max() - value.min())
         rgba = cmap(value.values)
         return [
-            "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-            for r, g, b in rgba[:, :3]
+            f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}" for r, g, b in rgba[:, :3]
         ]
     else:
         cmap = matplotlib.cm.get_cmap("Paired")
         value = value.fillna("NaN").astype(str)
         categories = {k: i for i, k in enumerate(value.unique())}
         assert isinstance(cmap, matplotlib.colors.ListedColormap)
-        colors = list(
-            cmap.colors[: len(categories)]  # ty: ignore[not-subscriptable, invalid-argument-type]
-        )
-        return [
-            "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
-            for r, g, b in [colors[min(len(colors) - 1, categories[v])] for v in value]
-        ]
+        colors: list[tuple] = list(cmap.colors[: len(categories)])
+        rgb = [colors[min(len(colors) - 1, categories[v])] for v in value.values]
+        return [f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}" for r, g, b in rgb]
 
 
 @op("Visualize miRNA graph", view="visualization", icon="eye", color="blue")

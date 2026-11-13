@@ -1,7 +1,6 @@
 - id: check-demo-workspaces
   name: check-demo-workspaces
-  language: script
-  entry: scripts/demo_pre-commit.py
-  types: [json]
-  pass_filenames: true
+  language: unsupported
+  entry: python scripts/demo_pre-commit.py --root-dir=examples
+  files: ^examples/.*\.lynxkite/workspace\.json$
   require_serial: true

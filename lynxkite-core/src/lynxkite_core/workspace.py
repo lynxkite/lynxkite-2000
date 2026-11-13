@@ -300,13 +300,13 @@ class Workspace(BaseConfig):
                         nc["data"]["error"] = None
                 data.tags = list(set(op.tags or []) | set(data.tags or []))
             else:
-                data.error = "Unknown operation."
+                data.error = f"Unknown operation: {data.op_id}"
                 data.meta = ops.Op.placeholder_from_id(data.op_id)
                 if nc:
                     import pycrdt
 
                     nc["data"]["meta"] = pycrdt.Map(data.meta.model_dump())
-                    nc["data"]["error"] = "Unknown operation."
+                    nc["data"]["error"] = data.error
 
     def connect_crdt(self, ws_crdt: "pycrdt.Map"):
         import pycrdt
