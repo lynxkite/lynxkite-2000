@@ -296,7 +296,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Unknown operation.")
+        node.publish_error(f"Unknown operation: {node.data.op_id}")
         return
     node.publish_started()
     input_map = {}
@@ -360,6 +360,7 @@ async def _execute_node(
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
             result.display = dataclasses.asdict(result.display)
+        op.save_display(result, op_ctx)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()

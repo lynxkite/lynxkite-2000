@@ -16,7 +16,7 @@ async def test_execute_operation_not_in_catalog():
         position=workspace.Position(x=0, y=0),
     )
     await execute(ws)
-    assert ws.nodes[0].data.error == "Unknown operation."
+    assert ws.nodes[0].data.error == "Unknown operation: Non existing op"
 
 
 @pytest.mark.parametrize(

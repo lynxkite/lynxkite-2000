@@ -6,9 +6,9 @@ import asyncio
 import enum
 import functools
 import hashlib
-import json
 import importlib.util
 import inspect
+import json
 import os
 import pathlib
 import pkgutil
@@ -19,10 +19,12 @@ import traceback
 import types
 import typing
 from dataclasses import dataclass
+
 import pydantic
 from pydantic_core import to_json
+
 from .matplotlib_to_image import matplotlib_to_image
-from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
+from .opcontext import CONTEXT_PARAM_NAME, OpContext, find_ctx_param_name
 from .workspace_paths import display_path
 
 if typing.TYPE_CHECKING:
@@ -231,7 +233,7 @@ class Result:
         path = pathlib.Path(display_path)
         if self.display is not None:
             path.parent.mkdir(parents=True, exist_ok=True)
-            display_json = to_json(self.display)
+            display_json = to_json(self.display) + b"\n"
             try:
                 with open(path, "r+b") as f:
                     old_display = f.read()
@@ -249,7 +251,6 @@ class Result:
             ) as f:
                 temp_name = f.name
                 f.write(display_json)
-                f.write(b"\n")
             os.replace(temp_name, path)
             self.display = None
             self.display_version = version + 1
@@ -319,11 +320,9 @@ class Op(BaseConfig):
         params = self.convert_params(params)
         ctx_name, ctx_idx = find_ctx_param_name(self.func)
         if ctx_name is not None and ctx_idx is not None:
-            inputs_list = list(inputs)
-            inputs_list.insert(ctx_idx, op_ctx)
-            res = self.func(*inputs_list, **params)
-        else:
-            res = self.func(*inputs, **params)
+            inputs = list(inputs)
+            inputs.insert(ctx_idx, op_ctx)
+        res = self.func(*inputs, **params)
 
         is_visualization_type = self.type in [
             "visualization",
@@ -340,21 +339,20 @@ class Op(BaseConfig):
                 res = Result(display=res)
             else:
                 res = Result(output=res)
+        return res
 
-        # Save display if needed
+    def save_display(self, result: Result, op_ctx: OpContext):
+        """Saves resolved visualization data. The executor must call this after awaiting the result."""
         if (
-            is_visualization_type
-            and self.type != "graph_creation_view"
+            self.type in ["visualization", "graph_visualization", "table_view", "image", "molecule"]
             and op_ctx.ws
             and op_ctx.node
             and op_ctx.ws.path
         ):
-            res.save_display(
+            result.save_display(
                 display_path(op_ctx.ws.path, op_ctx.node.id),
                 (op_ctx.node.data.display_version or 0),
             )
-
-        return res
 
     def get_input(self, name: str):
         """Returns the input with the given name."""
