@@ -59,7 +59,7 @@ def generate_world(
         n_edge_types=n_et,
         convs=[str(c) for c in rng.choice(CONV_NAMES, n_layers)],
         acts=[str(a) for a in rng.choice(ACT_NAMES, n_layers)],
-        alpha=float(rng.uniform(0.1, 0.6)),
+        alpha=[float(a) for a in rng.uniform(0.1, 0.6, n_nt)],
         noise=float(rng.uniform(0.0, max_noise)),
         weight_seed=int(rng.integers(2**31)),
     )
@@ -145,7 +145,84 @@ def simulate(b: core.Bundle, *, steps: int, seed: int) -> core.Bundle:
     return out
 
 
-@op("Final graph", color="gray")
+@op("Observe", color="blue")
+def observe(
+    b: core.Bundle, *, k_steps: int = 10, p_apply: float = 0.5, seed: int = 0
+) -> core.Bundle:
+    rng = np.random.default_rng(seed)
+    spec = b.other["process"]
+    nodes, edges, states = b.dfs["nodes"], b.dfs["edges"], b.dfs["states"]
+    ids = nodes["id"].to_numpy()
+    log = {}
+
+    def on(name):
+        log[name] = bool(rng.random() < p_apply)
+        return log[name]
+
+    kept = np.ones(len(ids), bool)
+    obs_edges = edges.copy()
+
+    if on("missing_nodes_edges"):
+        fn, fe = rng.uniform(0, 0.4, 2)
+        kept &= rng.random(len(ids)) >= fn
+        obs_edges = obs_edges[rng.random(len(obs_edges)) >= fe]
+        log["frac_nodes_dropped"], log["frac_edges_dropped"] = float(fn), float(fe)
+
+    if on("missing_types"):
+        if rng.random() < 0.5:
+            t = int(rng.integers(spec["n_edge_types"]))
+            obs_edges = obs_edges[obs_edges["type"] != t]
+            log["dropped_edge_type"] = t
+        else:
+            t = int(rng.integers(spec["n_node_types"]))
+            kept &= nodes["type"].to_numpy() != t
+            log["dropped_node_type"] = t
+
+    kept_ids = ids[kept]
+    obs_edges = obs_edges[obs_edges["source"].isin(kept_ids) & obs_edges["target"].isin(kept_ids)]
+
+    if on("graph_edits") and len(kept_ids) > 1:
+        r, a = rng.uniform(0, 0.3, 2)
+        obs_edges = obs_edges.sample(frac=1 - r, random_state=seed)
+        n_add = int(a * len(edges))
+        u, v = rng.choice(kept_ids, n_add), rng.choice(kept_ids, n_add)
+        new = pd.DataFrame(
+            {
+                "source": np.minimum(u, v),
+                "target": np.maximum(u, v),
+                "type": rng.integers(spec["n_edge_types"], size=n_add),
+            }
+        )
+        obs_edges = pd.concat([obs_edges, new[new["source"] != new["target"]]])
+        obs_edges = obs_edges.drop_duplicates(["source", "target"])
+        log["frac_edges_removed"], log["frac_edges_added"] = float(r), float(a)
+
+    obs_edges = obs_edges.reset_index(drop=True)
+    obs_nodes = nodes[nodes["id"].isin(kept_ids)][["id", "type"]].reset_index(drop=True)
+
+    s = states[(states["step"] < k_steps) & states["id"].isin(kept_ids)].reset_index(drop=True)
+    x = stack_vectors(s["x"]).copy()
+    mask = np.ones_like(x)
+
+    if on("missing_variable"):
+        j = int(rng.integers(x.shape[1]))
+        x[:, j], mask[:, j] = 0, 0
+        log["hidden_dim"] = j
+
+    if on("noise"):
+        sigma = float(np.exp(rng.uniform(np.log(0.01), np.log(0.3))) * x.std())
+        x = x + sigma * rng.normal(size=x.shape) * mask
+        log["noise_sigma"] = sigma
+
+    obs_states = pd.DataFrame({"step": s["step"], "id": s["id"], "x": list(x), "mask": list(mask)})
+
+    out = core.Bundle(dfs=dict(b.dfs), relations=list(b.relations), other=dict(b.other))
+    out.dfs.update(obs_nodes=obs_nodes, obs_edges=obs_edges, obs_states=obs_states)
+    out.other["observation"] = log
+    return out
+
+
+@op("Final graph")
 def final_graph(b: core.Bundle, *, step: int = -1) -> core.Bundle:
     s = b.dfs["states"]
     t = s["step"].max() if step < 0 else step
