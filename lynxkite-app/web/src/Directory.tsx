@@ -11,6 +11,7 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Lock from "~icons/tabler/lock";
 import Settings from "~icons/tabler/settings";
 import Star from "~icons/tabler/star";
 import StarFilled from "~icons/tabler/star-filled";
@@ -20,7 +21,9 @@ import {
   apiFetch,
   apiJson,
   getConfig,
+  triggerLogin,
   uploadFile,
+  useAuth,
   useFolderPermissions,
   usePath,
 } from "./common.ts";
@@ -108,6 +111,54 @@ function Breadcrumbs(props: { path: string }) {
           })}
       </span>
       <title>{props.path}</title>
+    </div>
+  );
+}
+
+function DirectoryError({
+  error,
+  path,
+  permissions,
+}: {
+  error: Error;
+  path: string;
+  permissions: { read: boolean; isLoading: boolean };
+}) {
+  const user = useAuth();
+  const loggedIn = !!user && !user.expired;
+  if (permissions.isLoading) return null;
+  if (permissions.read) {
+    return (
+      <div className="directory-error">
+        <AlertCircle style={{ verticalAlign: "baseline" }} />
+        <div>
+          <h1>Error</h1>
+          {error.message}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="directory-error">
+      <Lock style={{ verticalAlign: "baseline" }} />
+      <div>
+        <h1>No access</h1>
+        {loggedIn ? (
+          <p>You don't have access to this folder. Ask an administrator to give you access.</p>
+        ) : (
+          <p>Sign in to see the files here.</p>
+        )}
+        {path && (
+          <p>
+            <Link to="/">Go to the main folder</Link>
+          </p>
+        )}
+      </div>
+      {!loggedIn && (
+        <button type="button" className="btn btn-primary" onClick={() => triggerLogin()}>
+          Sign in
+        </button>
+      )}
     </div>
   );
 }
@@ -376,13 +427,7 @@ export default function Directory() {
   if (list.error) {
     return (
       <ManagementPage sidebarBottom={sidebarBottom}>
-        <div className="directory-error">
-          <AlertCircle style={{ verticalAlign: "baseline" }} />
-          <p>
-            <h1>Error</h1>
-            {list.error.message}
-          </p>
-        </div>
+        <DirectoryError error={list.error} path={path} permissions={permissions} />
       </ManagementPage>
     );
   }
