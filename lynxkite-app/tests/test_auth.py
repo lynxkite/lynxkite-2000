@@ -81,6 +81,23 @@ def test_ws_logged_in_user_can_write(auth_on, guest_acl):
     assert scope["lynxkite_user"]["sub"] == "u1"
 
 
+def test_ws_user_label_auth_off():
+    scope: dict = {}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) is None
+
+
+def test_ws_user_label_auth_on(auth_on, guest_acl):
+    scope: dict = {}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) == "Guest"
+    scope = {"query_string": b"access_token=ok"}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) == "u1"
+    scope["lynxkite_user"] = {"sub": "u1", "email": "a@b.c", "name": "Alice"}
+    assert ws_auth.user_label(scope) == "Alice"
+
+
 def test_ws_bad_token_rejected(auth_on, guest_acl):
     assert authenticate_websocket({"query_string": b"access_token=bad"}, "x.lynxkite.json") is True
 
