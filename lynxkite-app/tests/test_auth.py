@@ -1,14 +1,22 @@
 from pathlib import Path
 
+import pycrdt
 import pytest
 import yaml
 from fastapi import HTTPException, Request
 from fastapi.testclient import TestClient
 from jose.exceptions import JWTError
-from lynxkite_app import acl, auth, main, ws_auth
+from lynxkite_app import acl, auth, main, progress_crdt, ws_auth
 from lynxkite_app.main import app
 from lynxkite_app.ws_auth import authenticate_websocket
-from pycrdt import Channel, YMessageType, YSyncMessageType
+from pycrdt import (
+    Channel,
+    YMessageType,
+    YSyncMessageType,
+    create_sync_message,
+    create_update_message,
+)
+from starlette.websockets import WebSocketDisconnect
 
 client = TestClient(app)
 
@@ -79,6 +87,23 @@ def test_ws_logged_in_user_can_write(auth_on, guest_acl):
     assert authenticate_websocket(scope, "x.lynxkite.json") is False
     assert scope["lynxkite_write"] is True
     assert scope["lynxkite_user"]["sub"] == "u1"
+
+
+def test_ws_user_label_auth_off():
+    scope: dict = {}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) is None
+
+
+def test_ws_user_label_auth_on(auth_on, guest_acl):
+    scope: dict = {}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) == "Guest"
+    scope = {"query_string": b"access_token=ok"}
+    assert authenticate_websocket(scope, "x.lynxkite.json") is False
+    assert ws_auth.user_label(scope) == "u1"
+    scope["lynxkite_user"] = {"sub": "u1", "email": "a@b.c", "name": "Alice"}
+    assert ws_auth.user_label(scope) == "Alice"
 
 
 def test_ws_bad_token_rejected(auth_on, guest_acl):
@@ -178,3 +203,40 @@ def test_provider_accepts_id_token_with_at_hash():
     provider.issuer = claims["iss"]
     provider.jwks = {"keys": [public]}
     assert provider.verify(token)["sub"] == "u1"
+
+
+@pytest.fixture
+def staff_only_acl(tmp_path):
+    acl.set_data_root(tmp_path)
+    (tmp_path / "settings.yaml").write_text(
+        yaml.dump({"acl": {"read": ["*"], "write": ["group:lynxkite"]}})
+    )
+    yield
+    acl.set_data_root(Path())
+
+
+def test_progress_ws_requires_root_read(auth_on, staff_only_acl):
+    with (
+        TestClient(app) as c,
+        pytest.raises(WebSocketDisconnect) as e,
+        c.websocket_connect("/ws/progress/crdt/progress"),
+    ):
+        pass
+    assert e.value.code == 4403
+
+
+def test_progress_ws_is_read_only(auth_on, staff_only_acl):
+    fake = pycrdt.Doc()
+    fake["workspaces"] = pycrdt.Map()
+    fake["workspaces"]["fake.lynxkite.json"] = "{}"
+    with TestClient(app) as c:
+        with c.websocket_connect("/ws/progress/crdt/progress?access_token=ok") as ws:
+            assert ws.receive_bytes()[0] == YMessageType.SYNC
+            ws.send_bytes(create_update_message(fake.get_update()))
+            # The server answers SyncStep1 in order, so the update was handled by then.
+            ws.send_bytes(create_sync_message(pycrdt.Doc()))
+            while True:
+                msg = ws.receive_bytes()
+                if msg[:2] == bytes([YMessageType.SYNC, YSyncMessageType.SYNC_STEP2]):
+                    break
+        assert "fake.lynxkite.json" not in progress_crdt._progress_ydoc["workspaces"]

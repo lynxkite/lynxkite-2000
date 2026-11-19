@@ -2,6 +2,7 @@
 import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
+import { useFolderPermissions } from "./common.ts";
 import {
   formatWorkspaceProgressSuffix,
   getWorkspaceProgress,
@@ -20,61 +21,66 @@ export function WorkspaceProgressList() {
       {workspaces.length === 0 ? (
         <p className="sidebar-empty">No workspaces running.</p>
       ) : (
-        workspaces.map((ws) => {
-          const roomName = ws.room_name || ws.name;
-          const progress = getWorkspaceProgress(ws);
-          const tqdm = progress.activeNode?.tqdm;
-          const suffix = formatWorkspaceProgressSuffix(progress);
-          return (
-            <div key={ws.name} className="sidebar-workspace">
-              <div className="sidebar-workspace-name">{ws.name}</div>
-              {progress.activeNode && (
-                <div className="sidebar-active-node">
-                  {progress.activeNode.title}
-                  {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
-                </div>
-              )}
-              <progress
-                className={`progress progress-${workspaceProgressColor(progress.status)} w-full`}
-                value={progress.percent}
-                max={100}
-              />
-              <div className="sidebar-workspace-meta">
-                {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
-                {suffix && <span> {suffix}</span>}
-              </div>
-              <div className="sidebar-workspace-actions">
-                {progress.paused ? (
-                  <button
-                    className="btn btn-sm"
-                    title="Resume"
-                    type="button"
-                    onClick={() => pauseWorkspace(roomName, false)}
-                  >
-                    <Play />
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-sm"
-                    title="Pause"
-                    type="button"
-                    onClick={() => pauseWorkspace(roomName, true)}
-                  >
-                    <Pause />
-                  </button>
-                )}
-                <button
-                  className="btn btn-sm"
-                  title="Stop"
-                  type="button"
-                  onClick={() => stopWorkspace(roomName)}
-                >
-                  <Stop />
-                </button>
-              </div>
-            </div>
-          );
-        })
+        workspaces.map((ws) => <SidebarWorkspace key={ws.name} ws={ws} />)
+      )}
+    </div>
+  );
+}
+
+function SidebarWorkspace({ ws }: { ws: any }) {
+  const roomName = ws.room_name || ws.name;
+  const canWrite = useFolderPermissions(roomName).write;
+  const progress = getWorkspaceProgress(ws);
+  const tqdm = progress.activeNode?.tqdm;
+  const suffix = formatWorkspaceProgressSuffix(progress);
+  return (
+    <div className="sidebar-workspace">
+      <div className="sidebar-workspace-name">{ws.name}</div>
+      {progress.activeNode && (
+        <div className="sidebar-active-node">
+          {progress.activeNode.title}
+          {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
+        </div>
+      )}
+      <progress
+        className={`progress progress-${workspaceProgressColor(progress.status)} w-full`}
+        value={progress.percent}
+        max={100}
+      />
+      <div className="sidebar-workspace-meta">
+        {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
+        {suffix && <span> {suffix}</span>}
+      </div>
+      {canWrite && (
+        <div className="sidebar-workspace-actions">
+          {progress.paused ? (
+            <button
+              className="btn btn-sm"
+              title="Resume"
+              type="button"
+              onClick={() => pauseWorkspace(roomName, false)}
+            >
+              <Play />
+            </button>
+          ) : (
+            <button
+              className="btn btn-sm"
+              title="Pause"
+              type="button"
+              onClick={() => pauseWorkspace(roomName, true)}
+            >
+              <Pause />
+            </button>
+          )}
+          <button
+            className="btn btn-sm"
+            title="Stop"
+            type="button"
+            onClick={() => stopWorkspace(roomName)}
+          >
+            <Stop />
+          </button>
+        </div>
       )}
     </div>
   );
