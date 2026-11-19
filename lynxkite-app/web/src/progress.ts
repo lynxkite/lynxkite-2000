@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import { apiFetch } from "./common.ts";
+import { apiFetch, getWebSocketParams } from "./common.ts";
 
 export function formatWorkspaceEta(seconds: number | null | undefined): string {
   if (seconds == null) return "";
@@ -112,7 +112,14 @@ export function useProgress(enabled: boolean) {
       `${proto}//${location.host}/ws/progress/crdt`,
       "progress",
       doc,
+      { connect: false },
     );
+    let destroyed = false;
+    getWebSocketParams().then((params) => {
+      if (destroyed) return;
+      provider.params = params;
+      provider.connect();
+    });
     const wsMap = doc.getMap("workspaces");
     const gpuServicesText = doc.getText("gpu_services");
 
@@ -149,6 +156,7 @@ export function useProgress(enabled: boolean) {
     });
 
     return () => {
+      destroyed = true;
       wsMap.unobserve(syncWorkspaces);
       gpuServicesText.unobserve(syncGpuServices);
       provider.destroy();

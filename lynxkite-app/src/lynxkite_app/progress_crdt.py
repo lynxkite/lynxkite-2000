@@ -13,9 +13,11 @@ import fastapi
 import pycrdt
 import pycrdt.websocket
 import uvicorn.protocols.utils
-from websockets.exceptions import ConnectionClosedOK
 from lynxkite_core import workspace
 from lynxkite_core.workspace_progress import compute_workspace_progress, workspace_display_name
+from websockets.exceptions import ConnectionClosedOK
+
+from . import ws_auth
 
 # Room name -> user label of each open connection (None when auth is off).
 _active_workspace_ws_connections: dict[str, list[str | None]] = {}
@@ -192,5 +194,12 @@ def register_routes(router, sanitize_path) -> None:
         if progress_server is None:
             await websocket.close(code=1008)
             return
-        server = pycrdt.websocket.ASGIServer(progress_server)
-        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+        scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+        # Progress lists workspaces and users from everywhere, so require read access on the root.
+        if not await ws_auth.accept(scope, websocket._receive, websocket._send, ""):
+            return
+        # Only the server writes progress.
+        scope["lynxkite_write"] = False
+        await ws_auth.serve_accepted(
+            progress_server, scope, websocket._receive, websocket._send, room_name
+        )
