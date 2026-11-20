@@ -25,22 +25,49 @@ export class Workspace {
     return await splash.createWorkspace(workspaceName);
   }
 
+  async openBar() {
+    const toggle = this.page.getByRole("button", { name: "Show toolbar" });
+    if (await toggle.isVisible()) {
+      await toggle.click();
+    }
+  }
+
+  async openMore() {
+    await this.openBar();
+    await this.page.getByRole("tab", { name: "Others" }).click();
+  }
+
+  async toggleSettingsPanel() {
+    await this.openMore();
+    const envSelect = this.page.locator('select[name="workspace-env"]');
+    if (!(await envSelect.isVisible())) {
+      await this.page.locator('[data-tooltip-html*="Settings:"] button').click();
+    }
+  }
+
   async getEnvs() {
     // Return all available workspace environments
+    await this.toggleSettingsPanel();
     const envs = this.page.locator('select[name="workspace-env"] option');
     await expect(envs).not.toHaveCount(0);
-    return await envs.allInnerTexts();
+    const names = await envs.allInnerTexts();
+    await this.toggleSettingsPanel();
+    return names;
   }
 
   async setEnv(env: string) {
+    await this.toggleSettingsPanel();
     await this.page.locator('select[name="workspace-env"]').selectOption(env);
+    await this.toggleSettingsPanel();
   }
 
   async groupSelection() {
+    await this.openMore();
     await this.page.locator('button[name="groupBtn"]').click();
   }
 
   async ungroupSelection() {
+    await this.openMore();
     await this.page.locator('button[name="ungroupBtn"]').click();
   }
 
@@ -62,7 +89,7 @@ export class Workspace {
   }
 
   async expectCurrentWorkspaceIs(name: string) {
-    await expect(this.page.locator(".ws-name")).toHaveText(name);
+    await expect(this.page).toHaveTitle(new RegExp(name));
   }
 
   async waitForNodesToLoad() {
@@ -71,29 +98,41 @@ export class Workspace {
     await this.page.locator(".react-flow__node").first().waitFor();
   }
 
+  async openBoxPanel() {
+    await this.openBar();
+    const search = this.page.locator(".boxes-panel .node-search input");
+    if (!(await search.isVisible())) {
+      await this.page.locator('[data-tooltip-html*="Boxes:"] button').click();
+    }
+    await expect(search).toBeVisible();
+  }
+
+  async closeBoxPanel() {
+    await this.page.getByRole("tab", { name: "Others" }).click();
+    await expect(this.page.locator(".boxes-panel")).not.toBeVisible();
+  }
+
   async addBox(boxName: string) {
     // TODO: Support passing box parameters.
     const allBoxes = await this.getBoxes().all();
-    await this.page.locator(".ws-name").click();
-    await this.page.keyboard.press("/");
+    await this.openBoxPanel();
     const parts = boxName.split(" › ");
     for (const part of parts) {
       // Allow for category counts at the end.
       const re = new RegExp(`^${part.trim()}\\s*\\d*`);
-      await this.page.locator(".node-search").getByText(re).click();
+      await this.page.locator(".boxes-panel .node-search").getByText(re).click();
     }
     await expect(this.getBoxes()).toHaveCount(allBoxes.length + 1);
+    // Closing the panel resets its category navigation for the next box.
+    await this.closeBoxPanel();
   }
 
   async getCatalog() {
-    await this.page.locator(".ws-name").click();
-    await this.page.keyboard.press("/");
-    const results = this.page.locator(".node-search .matches .search-result-op");
+    await this.openBoxPanel();
+    const results = this.page.locator(".boxes-panel .node-search .matches .search-result-op");
     await expect(results.first()).toBeVisible();
     const catalog = await results.allInnerTexts();
-    // Dismiss the catalog menu
-    await this.page.keyboard.press("Escape");
-    await expect(this.page.locator(".node-search")).not.toBeVisible();
+    await this.closeBoxPanel();
     return catalog;
   }
 
@@ -217,6 +256,7 @@ export class Workspace {
   }
 
   async close() {
+    await this.openBar();
     await this.page.getByRole("link", { name: "close" }).click();
   }
 }

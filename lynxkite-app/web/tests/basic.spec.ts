@@ -14,21 +14,26 @@ test.afterEach(async () => {
   await splash.deleteEntry("basic_spec_test");
 });
 
-for (const delay of [0, 350]) {
-  test(`Background click dismisses node search without reopening (delay ${delay} ms)`, async () => {
-    await workspace.getCatalog();
-    await workspace.page.keyboard.press("/");
-    const search = workspace.page.locator(".node-search");
-    await expect(search).toBeVisible();
+test("Slash opens the box panel and focuses the search", async () => {
+  const page = workspace.page;
+  await page.locator(".react-flow__pane").click();
+  await page.keyboard.press("/");
+  const search = page.locator(".boxes-panel .node-search input");
+  await expect(search).toBeFocused();
+  // The activity bar button closes the panel again.
+  await page.locator('[data-tooltip-html*="Boxes:"] button').click();
+  await expect(page.locator(".boxes-panel")).not.toBeVisible();
+});
 
-    const background = workspace.page.locator(".react-flow__pane");
-    await background.click({ position: { x: 20, y: 20 }, delay });
-    await expect(search).not.toBeVisible();
-
-    await background.click({ position: { x: 100, y: 100 } });
-    await expect(search).toBeVisible();
-  });
-}
+test("Drag a box from the panel onto the workspace", async () => {
+  const page = workspace.page;
+  await workspace.openBoxPanel();
+  await page.locator(".boxes-panel .node-search input").fill("Comment");
+  const result = page.locator(".boxes-panel .search-result-op").first();
+  const target = page.locator(".react-flow__pane");
+  await result.dragTo(target, { targetPosition: { x: 200, y: 200 } });
+  await expect(workspace.getBoxes()).toHaveCount(1);
+});
 
 test("Box creation & deletion per env", async () => {
   const envs = await workspace.getEnvs();
