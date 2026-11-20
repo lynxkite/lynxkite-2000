@@ -10,7 +10,7 @@ const Login = memo(LoginIcon);
 const Logout = memo(LogoutIcon);
 const UserCircle = memo(UserCircleIcon);
 
-export default function UserMenu() {
+export default function UserMenu(props: { dropdownClass?: string }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const config = getConfig();
@@ -55,7 +55,10 @@ export default function UserMenu() {
   }
 
   return (
-    <div ref={rootRef} className={`user-menu dropdown dropdown-end ${open ? "dropdown-open" : ""}`}>
+    <div
+      ref={rootRef}
+      className={`user-menu dropdown ${props.dropdownClass ?? "dropdown-end"} ${open ? "dropdown-open" : ""}`}
+    >
       <button
         type="button"
         className="user-menu-button"
