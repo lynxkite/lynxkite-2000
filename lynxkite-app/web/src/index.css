@@ -20,14 +20,25 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background: #002a4c;
+  /* Sidebar palette: three navy shades, an accent, body text, and derived tints. */
+  --navy-900: var(--navy-900);
+  --navy-800: #002a4c;
+  --navy-700: #00355f;
+  --accent: oklch(75% 0.13 230);
+  --text-on-navy: oklch(92% 0.03 230);
+  --accent-fill: color-mix(in oklch, var(--accent) 15%, transparent);
+  --accent-line: color-mix(in oklch, var(--accent) 30%, transparent);
+  --text-muted: color-mix(in oklch, var(--text-on-navy) 65%, transparent);
+  --navy-shadow: color-mix(in srgb, var(--navy-800) 50%, transparent);
+
+  background: var(--navy-800);
   --color-base-100: white;
   --color-base-200: #eee;
   --color-base-300: #ddd;
-  --color-primary: oklch(75% 0.13 230);
+  --color-primary: var(--accent);
   --color-primary-content: white;
   --border: 1px;
-  --input-color: oklch(75% 0.13 230);
+  --input-color: var(--accent);
   --radius-field: 0.5rem;
   --radius-box: 0.5rem;
   --radius-selector: 0.5rem;
@@ -162,8 +173,8 @@ svg {
     max-width: calc(100% - 16px);
     padding: 2px 14px 2px 4px;
     border-radius: 8px;
-    background: #002a4c;
-    color: oklch(75% 0.13 230);
+    background: var(--navy-800);
+    color: var(--accent);
 
     &:empty {
       display: none;
@@ -198,7 +209,7 @@ svg {
     border: none;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.1);
-    color: oklch(75% 0.13 230);
+    color: var(--accent);
     font-size: 0.9em;
     cursor: pointer;
     transition: background 0.15s;
@@ -989,9 +1000,9 @@ svg {
   font-size: 1.1rem;
   font-weight: 600;
   border-radius: 26px;
-  background: #002a4c;
+  background: var(--navy-800);
   color: white;
-  box-shadow: 0 4px 16px #002a4c66;
+  box-shadow: 0 4px 16px var(--navy-shadow);
   cursor: pointer;
   transition:
     transform 0.2s ease,
@@ -1012,7 +1023,7 @@ svg {
 
   svg {
     font-size: 28px;
-    color: oklch(75% 0.13 230);
+    color: var(--accent);
   }
 
   .workspace-progress-compact {
@@ -1020,7 +1031,7 @@ svg {
     align-items: center;
     gap: 8px;
     padding-left: 12px;
-    border-left: 1px solid oklch(75% 0.13 230 / 0.4);
+    border-left: 1px solid var(--accent-line);
 
     progress {
       width: 100px;
@@ -1037,7 +1048,7 @@ svg {
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 22px #002a4c99;
+    box-shadow: 0 6px 22px var(--navy-shadow);
   }
 }
 
@@ -1076,10 +1087,10 @@ svg {
     overflow-y: auto;
   }
 
-  --rail-bg: #002a4c;
-  --rail-fg: oklch(75% 0.13 230);
-  --rail-panel-bg: #00355f;
-  --rail-panel-fg: oklch(92% 0.03 230);
+  --rail-bg: var(--navy-800);
+  --rail-fg: var(--accent);
+  --rail-panel-bg: var(--navy-700);
+  --rail-panel-fg: var(--text-on-navy);
   background: var(--rail-bg);
   color: var(--rail-fg);
 
@@ -1107,7 +1118,7 @@ svg {
     cursor: pointer;
 
     &:hover {
-      background: oklch(75% 0.13 230 / 0.15);
+      background: var(--accent-fill);
     }
   }
 
@@ -1117,7 +1128,7 @@ svg {
     gap: 4px;
     padding: 8px 10px;
     border-radius: 10px;
-    background: oklch(75% 0.13 230 / 0.12);
+    background: var(--accent-fill);
 
     progress {
       width: 100%;
@@ -1158,7 +1169,7 @@ svg {
       height: 64px;
       padding: 0;
       font-size: 0.8rem;
-      background: oklch(75% 0.13 230 / 0.12);
+      background: var(--accent-fill);
 
       svg {
         font-size: 22px;
@@ -1173,7 +1184,7 @@ svg {
     gap: 4px;
     padding: 3px;
     border-radius: 10px;
-    background: oklch(75% 0.13 230 / 0.12);
+    background: var(--accent-fill);
 
     > * {
       display: contents;
@@ -1196,7 +1207,7 @@ svg {
     }
 
     &:hover:not(.active) {
-      background: oklch(75% 0.13 230 / 0.15);
+      background: var(--accent-fill);
     }
 
     &.active {
@@ -1268,51 +1279,51 @@ svg {
 
     .node-search input,
     .assistant-editor {
-      background: #001e36;
+      background: var(--navy-900);
       color: var(--rail-panel-fg);
-      border: 1px solid oklch(75% 0.13 230 / 0.3);
+      border: 1px solid var(--accent-line);
     }
 
     .search-result-path,
     .search-result-description {
-      color: oklch(85% 0.05 230 / 0.7);
+      color: var(--text-muted);
     }
 
     .search-result:hover:not(.selected) {
-      background-color: oklch(75% 0.13 230 / 0.15);
+      background-color: var(--accent-fill);
     }
 
     .assistant-input-row {
-      border-top-color: oklch(75% 0.13 230 / 0.3);
+      border-top-color: var(--accent-line);
     }
 
     .chat-bubble:not(.chat-bubble-primary) {
-      background: #001e36;
+      background: var(--navy-900);
       color: var(--rail-panel-fg);
     }
 
     .chat-system-message,
     .assistant-empty {
-      color: oklch(85% 0.05 230 / 0.6);
+      color: var(--text-muted);
     }
 
     .back-button,
     .search-result-category:not(.selected) {
-      background-color: oklch(75% 0.13 230 / 0.18);
+      background-color: var(--accent-fill);
       color: var(--rail-panel-fg);
     }
 
     .search-result-category .category-ops-contained {
-      color: oklch(85% 0.05 230 / 0.7);
+      color: var(--text-muted);
     }
 
     .assistant-actions .btn:not(.btn-primary) {
-      background: oklch(75% 0.13 230 / 0.18);
-      border-color: oklch(75% 0.13 230 / 0.3);
+      background: var(--accent-fill);
+      border-color: var(--accent-line);
       color: var(--rail-panel-fg);
 
       &:hover:not(:disabled) {
-        background: oklch(75% 0.13 230 / 0.3);
+        background: var(--accent-line);
       }
     }
 
@@ -1334,7 +1345,7 @@ svg {
     flex-direction: column;
     gap: 2px;
     padding-top: 10px;
-    border-top: 1px solid oklch(75% 0.13 230 / 0.3);
+    border-top: 1px solid var(--accent-line);
   }
 
   .user-menu-button {
@@ -1345,7 +1356,7 @@ svg {
     background: transparent;
 
     &:hover {
-      background: oklch(75% 0.13 230 / 0.15);
+      background: var(--accent-fill);
     }
   }
 
@@ -1370,7 +1381,7 @@ svg {
     }
 
     &:hover:not(:disabled) {
-      background: oklch(75% 0.13 230 / 0.15);
+      background: var(--accent-fill);
     }
 
     &:disabled {
@@ -1464,7 +1475,7 @@ svg {
   .management-sidebar {
     flex-shrink: 0;
     width: 48px;
-    background: #001e36;
+    background: var(--navy-900);
     transition: width 0.25s ease;
     overflow: hidden;
     display: flex;
@@ -2340,7 +2351,7 @@ svg {
     button {
       background: transparent;
       border: none;
-      color: oklch(75% 0.13 230);
+      color: var(--accent);
     }
   }
 
