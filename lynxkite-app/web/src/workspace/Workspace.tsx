@@ -26,6 +26,7 @@ import {
 import { Link } from "react-router";
 import useSWR, { type Fetcher } from "swr";
 import type { Array as YArray, Map as YMap } from "yjs";
+import ArrowBackUp from "~icons/tabler/arrow-back-up.jsx";
 import ArrowForwardUp from "~icons/tabler/arrow-forward-up.jsx";
 import Arrow from "~icons/tabler/arrow-wave-right-up.jsx";
 import Backspace from "~icons/tabler/backspace.jsx";
@@ -87,6 +88,7 @@ const Assistant = lazy(() => import("./Assistant.tsx"));
 // Surprisingly, re-rendering the icons is very expensive in dev mode.
 // Memoizing them fixes it.
 const DeleteIcon = memo(Backspace);
+const UndoIcon = memo(ArrowBackUp);
 const RedoIcon = memo(ArrowForwardUp);
 const GridIcon = memo(GridDots);
 const GridOffIcon = memo(Arrow);
@@ -976,6 +978,15 @@ function LynxKiteFlow() {
                                   onClick={deleteSelection}
                                 >
                                   <DeleteIcon />
+                                </ActivityButton>
+                                <ActivityButton
+                                  label="Undo"
+                                  doc="Undo the last change (Ctrl+Z)"
+                                  disabled={!canWrite}
+                                  onClick={() => crdt?.undo()}
+                                  name="undoBtn"
+                                >
+                                  <UndoIcon />
                                 </ActivityButton>
                                 <ActivityButton
                                   label="Redo"

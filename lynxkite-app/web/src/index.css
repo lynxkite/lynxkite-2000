@@ -1011,11 +1011,9 @@ svg {
 
   &.hidden {
     opacity: 0;
-    transform: translateX(16px);
     visibility: hidden;
     pointer-events: none;
     transition:
-      transform 0.2s ease,
       opacity 0.2s ease,
       visibility 0s 0.2s;
   }
@@ -1082,6 +1080,7 @@ svg {
     height: 100%;
     box-sizing: border-box;
     padding: 14px 12px;
+    overflow-x: hidden;
     overflow-y: auto;
   }
 
@@ -1232,6 +1231,7 @@ svg {
       .matches {
         flex: 1;
         min-height: 0;
+        overflow-x: hidden;
         overflow-y: auto;
       }
 
