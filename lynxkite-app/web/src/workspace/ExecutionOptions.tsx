@@ -11,7 +11,7 @@ export default function ExecutionOptions(props: {
     <>
       <h3>Execution options</h3>
       <Tooltip doc="Maximum number of GPUs used by the workspace.">
-        <label className="top-bar-gpus">
+        <label className="execution-gpus">
           <input
             type="number"
             className="input"

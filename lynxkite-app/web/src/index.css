@@ -195,6 +195,43 @@ svg {
     }
   }
 
+  /* Header of the code editor page. */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 4px;
+    background: var(--navy-800);
+    color: var(--accent);
+
+    .logo img {
+      height: 2em;
+      vertical-align: middle;
+      margin: 4px;
+    }
+
+    .ws-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      font-size: 1.5em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: white;
+    }
+
+    .tools {
+      display: flex;
+      align-items: center;
+
+      .btn {
+        padding: 0 10px;
+        font-size: 1.5em;
+        color: var(--accent);
+      }
+    }
+  }
+
   .user-menu-actions {
     display: flex;
     gap: 4px;
@@ -1246,6 +1283,27 @@ svg {
     border-radius: 6px;
     background: var(--rail-panel-bg);
     color: var(--rail-panel-fg);
+
+    h3 {
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .execution-gpus {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .input {
+        width: 70px;
+        height: 2em;
+        padding: 0 8px;
+        text-align: right;
+        background: var(--navy-900);
+        color: var(--rail-panel-fg);
+        border: 1px solid var(--accent-line);
+      }
+    }
   }
 
   .rail-panel,
