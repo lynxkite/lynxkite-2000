@@ -995,24 +995,23 @@ svg {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 52px;
-  padding: 0 20px 0 16px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 26px;
+  height: 40px;
+  padding: 0 14px 0 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
   background: var(--navy-800);
   color: white;
-  box-shadow: 0 4px 16px var(--navy-shadow);
   cursor: pointer;
   transition:
+    background 0.12s,
     transform 0.2s ease,
-    box-shadow 0.15s,
     opacity 0.2s ease,
     visibility 0s;
 
   &.hidden {
     opacity: 0;
-    transform: translateX(16px) scale(0.9);
+    transform: translateX(16px);
     visibility: hidden;
     pointer-events: none;
     transition:
@@ -1022,7 +1021,7 @@ svg {
   }
 
   svg {
-    font-size: 28px;
+    font-size: 22px;
     color: var(--accent);
   }
 
@@ -1047,8 +1046,7 @@ svg {
   }
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 22px var(--navy-shadow);
+    background: var(--navy-700);
   }
 }
 
@@ -1102,10 +1100,8 @@ svg {
   }
 
   .rail-title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: var(--rail-fg);
   }
 
@@ -1127,7 +1123,7 @@ svg {
     flex-direction: column;
     gap: 4px;
     padding: 8px 10px;
-    border-radius: 10px;
+    border-radius: 6px;
     background: var(--accent-fill);
 
     progress {
@@ -1149,32 +1145,15 @@ svg {
 
   .rail-section-title {
     padding: 0 8px 4px;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--rail-fg);
-    opacity: 0.6;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
   }
 
   .rail-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-
-    .activity-button {
-      flex-direction: column;
-      justify-content: center;
-      gap: 4px;
-      height: 64px;
-      padding: 0;
-      font-size: 0.8rem;
-      background: var(--accent-fill);
-
-      svg {
-        font-size: 22px;
-      }
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .rail-tabs {
@@ -1183,7 +1162,7 @@ svg {
     grid-auto-columns: 1fr;
     gap: 4px;
     padding: 3px;
-    border-radius: 10px;
+    border-radius: 6px;
     background: var(--accent-fill);
 
     > * {
@@ -1198,7 +1177,7 @@ svg {
     gap: 2px;
     padding: 6px 4px;
     font-size: 0.78rem;
-    border-radius: 8px;
+    border-radius: 6px;
     color: inherit;
     cursor: pointer;
 
@@ -1221,7 +1200,7 @@ svg {
     min-height: 0;
     display: flex;
     flex-direction: column;
-    border-radius: 10px;
+    border-radius: 6px;
     overflow: hidden;
     background: var(--rail-panel-bg);
     color: var(--rail-panel-fg);
@@ -1264,7 +1243,7 @@ svg {
 
   .rail-settings {
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 6px;
     background: var(--rail-panel-bg);
     color: var(--rail-panel-fg);
   }
@@ -1309,12 +1288,12 @@ svg {
 
     .back-button,
     .search-result-category:not(.selected) {
-      background-color: var(--accent-fill);
-      color: var(--rail-panel-fg);
+      color: var(--navy-800);
     }
 
     .search-result-category .category-ops-contained {
-      color: var(--text-muted);
+      color: inherit;
+      opacity: 0.7;
     }
 
     .assistant-actions .btn:not(.btn-primary) {
@@ -1367,7 +1346,7 @@ svg {
     width: 100%;
     padding: 10px 12px;
     font-size: 0.95rem;
-    border-radius: 10px;
+    border-radius: 6px;
     color: inherit;
     cursor: pointer;
     transition:
