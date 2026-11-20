@@ -12,6 +12,7 @@ import Close from "~icons/tabler/x.jsx";
 import favicon from "./assets/favicon.ico";
 import theme from "./code-theme.ts";
 import { getWebSocketParams, usePath } from "./common.ts";
+import LegacyWorkspaceNotice from "./LegacyWorkspaceNotice.tsx";
 
 export default function Code() {
   const path = usePath().replace(/^[/]code[/]/, "");
@@ -101,6 +102,7 @@ export default function Code() {
           </Link>
         </div>
       </div>
+      <LegacyWorkspaceNotice key={path} path={path} />
       <Editor
         defaultLanguage="python"
         theme="lynxkite"

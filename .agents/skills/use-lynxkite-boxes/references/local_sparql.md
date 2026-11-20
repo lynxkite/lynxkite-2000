@@ -10,13 +10,15 @@ def local_sparql(graph: rdflib.Graph, *, query: ops.LongStr, name: str = "result
     :param name: The name of the resulting DataFrame.
     """
     result = graph.query(query)
-
     if result.type == "SELECT":
-        return pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
+        df = pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
     elif result.type == "ASK":
-        return pd.DataFrame({"result": [result.askAnswer]})
+        df = pd.DataFrame({"result": [result.askAnswer]})
     else:
         return result.graph
+    b = core.Bundle()
+    b.dfs[name] = df
+    return b
 
 ```
 Custom types:

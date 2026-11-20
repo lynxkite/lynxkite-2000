@@ -1,0 +1,7 @@
+# Used when auth is on. Guests can read as anonymous. Anyone who can log in can read and write.
+acl:
+  read:
+    - anonymous
+    - "*"
+  write:
+    - "*"

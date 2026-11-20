@@ -296,7 +296,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Unknown operation.")
+        node.publish_error(f"Unknown operation: {node.data.op_id}")
         return
     node.publish_started()
     input_map = {}
@@ -360,6 +360,7 @@ async def _execute_node(
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
             result.display = dataclasses.asdict(result.display)
+        op.save_display(result, op_ctx)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
@@ -476,7 +477,7 @@ async def api_service_get(request):
       def chat_backend(input: Bundle):
           return ChatBackend()
 
-      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite.json/Chat%20backend%201/models
+      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite/Chat%20backend%201/models
     """
     service = await get_node_service(request)
     return await service.get(request)

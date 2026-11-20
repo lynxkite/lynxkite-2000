@@ -5,7 +5,7 @@ import json
 import pathlib
 import zipfile
 
-from lynxkite_core import workspace
+from lynxkite_core import workspace, workspace_paths
 
 
 def _zip_path(path: pathlib.Path) -> str:
@@ -27,13 +27,13 @@ def _add_directory(
             zf.write(path, _zip_path(target / rel))
 
 
-def _static_index_html(web_assets_path: pathlib.Path, workspace_filename: str) -> str:
+def _static_index_html(web_assets_path: pathlib.Path) -> str:
     index_html = (web_assets_path / "index.html").read_text(encoding="utf-8")
     # Use relative paths for the static export.
     index_html = index_html.replace('<base href="/" />', "")
     static_config = {
-        "workspace": "data/workspace.lynxkite.json",
-        "filesBase": f"data/.workspace_files/{workspace_filename}/",
+        "workspace": "data/workspace.lynxkite",
+        "filesBase": "data/workspace.lynxkite/node_data/",
     }
     script = (
         "<script>window.LYNXKITE_STATIC_WORKSPACE = "
@@ -49,19 +49,18 @@ def build_workspace_zip(
     workspace_path: pathlib.Path,
     web_assets_path: pathlib.Path,
 ):
-    workspace_filename = workspace_path.name
-    workspace_files_path = (
-        data_path / workspace_path.parent / ".workspace_files" / workspace_filename
-    )
+    workspace_bundle = data_path / workspace_path
+    workspace_files_path = workspace_paths.workspace_data_dir(workspace_bundle)
+    bundle_zip_path = pathlib.Path("data/workspace.lynxkite")
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         _add_directory(zf, web_assets_path, pathlib.Path(), skip_root_files={"index.html"})
-        zf.writestr("index.html", _static_index_html(web_assets_path, workspace_filename))
+        zf.writestr("index.html", _static_index_html(web_assets_path))
         # Load the workspace to make sure the metadata is updated.
-        ws = workspace.Workspace.load(data_path / workspace_path)
-        zf.writestr("data/workspace.lynxkite.json", ws.model_dump_json_sorted())
+        ws = workspace.Workspace.load(workspace_bundle)
+        zf.writestr(_zip_path(bundle_zip_path / "workspace.json"), ws.model_dump_json_sorted())
         if workspace_files_path.exists():
             _add_directory(
                 zf,
                 workspace_files_path,
-                pathlib.Path("data/.workspace_files") / workspace_filename,
+                bundle_zip_path / workspace_paths.NODE_DATA_DIRNAME,
             )

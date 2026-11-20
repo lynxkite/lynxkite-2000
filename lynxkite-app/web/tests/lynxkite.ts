@@ -22,6 +22,7 @@ export class Workspace {
   static async empty(page: Page, workspaceName: string): Promise<Workspace> {
     const splash = await Splash.open(page);
     await expect(splash.currentFolder()).toHaveText("testing sandbox");
+    await splash.deleteEntryIfExists(workspaceName);
     return await splash.createWorkspace(workspaceName);
   }
 

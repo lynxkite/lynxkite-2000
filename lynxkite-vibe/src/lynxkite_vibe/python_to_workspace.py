@@ -62,7 +62,7 @@ class CodeConverter:
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 function_nodes[node.name] = node
-        ws = workspace.Workspace(env=ENV, path=self.source_path + ".lynxkite.json", paused=True)
+        ws = workspace.Workspace(env=ENV, path=self.source_path + ".lynxkite", paused=True)
         saved_values = {}
         box_x = {}
         box_y = {}
@@ -202,9 +202,9 @@ class CodeConverter:
             f.write(ast.unparse(tree))
 
     def save_workspace(self):
-        print(f"Saving workspace to {self.destination_path}/workspace.lynxkite.json")
+        print(f"Saving workspace to {self.destination_path}/workspace.lynxkite")
         os.makedirs(self.destination_path, exist_ok=True)
-        self.ws.save(f"{self.destination_path}/workspace.lynxkite.json")
+        self.ws.save(f"{self.destination_path}/workspace.lynxkite")
 
     def start(self):
         if self.observer:

@@ -6,7 +6,7 @@ ENV = "LynxKite Graph Analytics"
 
 @op(ENV, "Word2vec for the top 1000 words", slow=True)
 def word2vec_1000():
-    import staticvectors  # ty: ignore[unresolved-import]
+    import staticvectors  # ty: ignore[import-not-found]
 
     model = staticvectors.StaticVectors("neuml/word2vec-quantized")
     df = pd.read_csv(

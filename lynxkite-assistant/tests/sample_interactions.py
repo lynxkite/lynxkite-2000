@@ -26,68 +26,68 @@ class SampleInput:
 
 samples = [
     SampleInput(
-        "lynxkite-assistant/tests/files/blank.lynxkite.json",
+        "lynxkite-assistant/tests/files/blank.lynxkite/workspace.json",
         "Hi",
         "Blank workspace, simple greeting",
     ),
     SampleInput(
-        "lynxkite-assistant/tests/files/blank.lynxkite.json",
+        "lynxkite-assistant/tests/files/blank.lynxkite/workspace.json",
         "Import dataset: https://storage.googleapis.com/lynxkite_public_data/airlines.graphml.gz and create visualizations for most outgoing and incoming flights by airports.",
         "Blank workspace pipeline build",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         "After the grayscale step, flip the result vertically and show it in a new preview.",
         "Insert Lynxkite node in a new branch",
     ),
     SampleInput(
-        "examples/Basic examples/Airlines demo.lynxkite.json",
+        "examples/Basic examples/Airlines demo.lynxkite/workspace.json",
         "Off the imported graph data, add a new branch that lists all the airports in a table.",
         "Insert Lynxkite node at the end of a branch",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         "Add a vertical flip between the Blur and the To grayscale steps.",
         "Insert Lynxkite node in middle + rewire safely",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         "Delete the Blur box.",
         "Delete one box from the middle + rewire safely",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         "Set the parameter of Blur to 10.",
         "Edit one parameter of a box",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         "Add a custom box that writes a text caption onto the image and place it before final preview.",
         "Create new local custom box",
     ),
     SampleInput(
-        "examples/Basic examples/Image processing.lynxkite.json",
+        "examples/Basic examples/Image processing.lynxkite/workspace.json",
         'Fork "To grayscale" into a custom box with a threshold parameter.',
         "Create custom box based on Lynxkite box",
     ),
     SampleInput(
-        "lynxkite-assistant/tests/files/disorganized.lynxkite.json",
+        "lynxkite-assistant/tests/files/disorganized.lynxkite/workspace.json",
         "Organize the layout of boxes.",
     ),
     SampleInput(
-        "lynxkite-assistant/tests/files/disorganized.lynxkite.json",
+        "lynxkite-assistant/tests/files/disorganized.lynxkite/workspace.json",
         "Clean up all orphan boxes that are not connected.",
     ),
     SampleInput(
-        "lynxkite-assistant/tests/files/N16_no_comments.lynxkite.json",
+        "lynxkite-assistant/tests/files/N16_no_comments.lynxkite/workspace.json",
         "Understand the workspace and add comments to explain functionality.",
     ),
     SampleInput(
-        "lynxkite-assistant/tests/files/N16_broken.lynxkite.json",
+        "lynxkite-assistant/tests/files/N16_broken.lynxkite/workspace.json",
         "Fix the broken workspace",
     ),
     SampleInput(
-        "examples/Peter's lessons/soccer.lynxkite.json",
+        "examples/Peters lessons/Soccer.lynxkite/workspace.json",
         "Reorganize the boxes so the flow is going top to bottom instead of left to right.",
     ),
 ]
@@ -111,14 +111,14 @@ async def test_assistant_stream(skip_existing=False):
         file = dir / Path(
             f"sample_{str(i).zfill(m)}_"
             + "".join(c if c.isalnum() else "_" for c in inp.title)
-            + ".lynxkite.json"
+            + ".lynxkite"
         )
         os.makedirs(dir, exist_ok=True)
         if skip_existing and file.exists():
             print(f"Skipping sample {i}: {inp.title} (file exists)")
             continue
-        file.touch(exist_ok=True)
-        with open(inp.filename) as f, open(file, "w") as f2:
+        file.mkdir(parents=True, exist_ok=True)
+        with open(inp.filename) as f, open(file / "workspace.json", "w") as f2:
             f2.write(f.read())
         req = assistant.AssistantCompletionRequest(
             workspace=str(file),

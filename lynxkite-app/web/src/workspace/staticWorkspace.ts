@@ -29,7 +29,7 @@ export function useStaticWorkspace() {
 
   useEffect(() => {
     if (!config) return;
-    fetch(config.workspace)
+    fetch(`${config.workspace}/workspace.json`)
       .then((res) => res.json())
       .then((ws: WorkspaceType) => {
         const withPath = { ...ws, path: config.workspace };

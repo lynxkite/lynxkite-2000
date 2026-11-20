@@ -18,7 +18,7 @@ export function shortName(item: DirectoryEntry) {
   return item.name
     .split("/")
     .pop()
-    ?.replace(/[.]lynxkite[.]json$/, "");
+    ?.replace(/[.]lynxkite(?:[.]json)?$/, "");
 }
 
 function createListStore(key: string) {

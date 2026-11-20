@@ -29,12 +29,15 @@ def remote_sparql(*, endpoint: str = "", query: ops.LongStr, name: str = "result
     r.raise_for_status()
 
     if "json" in r.headers.get("Content-Type", ""):
+        b = core.Bundle()
         data = r.json()
         if "results" in data:
             rows = [{k: v["value"] for k, v in b.items()} for b in data["results"]["bindings"]]
-            return pd.DataFrame(rows, columns=data["head"]["vars"])
+            df = pd.DataFrame(rows, columns=data["head"]["vars"])
         else:
-            return pd.DataFrame({"result": [data["boolean"]]})
+            df = pd.DataFrame({"result": [data["boolean"]]})
+        b.dfs[name] = df
+        return b
     else:
         return Graph().parse(data=r.text, format="turtle")
 
@@ -48,10 +51,12 @@ def local_sparql(graph: rdflib.Graph, *, query: ops.LongStr, name: str = "result
     :param name: The name of the resulting DataFrame.
     """
     result = graph.query(query)
-
     if result.type == "SELECT":
-        return pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
+        df = pd.DataFrame(list(result), columns=[str(v) for v in result.vars])
     elif result.type == "ASK":
-        return pd.DataFrame({"result": [result.askAnswer]})
+        df = pd.DataFrame({"result": [result.askAnswer]})
     else:
         return result.graph
+    b = core.Bundle()
+    b.dfs[name] = df
+    return b

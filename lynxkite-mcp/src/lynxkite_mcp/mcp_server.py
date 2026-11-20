@@ -24,7 +24,7 @@ class WorkspaceAsTool:
             edges_out.setdefault(e.source, []).append(e.target)
         input_nodes = []
         self.output_nodes = set()
-        func_name = pathlib.Path(self.ws_path).name.removesuffix(".lynxkite.json")
+        func_name = pathlib.Path(self.ws_path).name.removesuffix(".json").removesuffix(".lynxkite")
         description = ""
         for n in self.ws.nodes:
             if n.data.op_id == "Comment":

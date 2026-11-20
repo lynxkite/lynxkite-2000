@@ -1,25 +1,44 @@
 #!/usr/bin/env python3
 """Pre-commit hook to check the demo workspaces."""
 
-from lynxkite_core import workspace, ops
-from pathlib import Path
-import os
+import argparse
 import asyncio
+import os
 import sys
+from pathlib import Path
 
-demo_dir = "examples"
+from lynxkite_core import ops, workspace, workspace_paths
+
+ops.detect_plugins()
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--rerun",
+    action="store_true",
+    help="Allow re-running workspaces",
+)
+parser.add_argument(
+    "--root-dir",
+    default="examples",
+    help="Run workspaces in this directory",
+)
+parser.add_argument(
+    "filenames",
+    nargs="*",
+    help="Files to check",
+)
+args = parser.parse_args()
 
 
-def check_demo_ws(ws_path):
-    parent_dir = ws_path.parent
-    ws_name = ws_path.name
-    ws = workspace.Workspace.load(ws_path)
+def check_demo_ws(ws_path: Path, rerun: bool):
+    try:
+        ws = workspace.Workspace.load(ws_path)
+    except Exception as e:
+        return f"Could not read {ws_path}: {e}"
     changed_ws = False
     if not ws.paused:
         ws.paused = True
         changed_ws = True
-    if not (parent_dir / ".workspace_files" / ws_name).exists():
-        os.makedirs(parent_dir / ".workspace_files" / ws_name, exist_ok=True)
+    workspace_paths.workspace_data_dir(ws_path).mkdir(parents=True, exist_ok=True)
     if ws.assistant_messages:
         ws.assistant_messages = []
         changed_ws = True
@@ -34,10 +53,12 @@ def check_demo_ws(ws_path):
                 "image",
                 "molecule",
             ]
-            and not (parent_dir / ".workspace_files" / ws_name / f"{node.id}.json").exists()
+            and not workspace_paths.display_path(ws_path, node.id).exists()
         ):
             missing_ws_files = True
     if missing_ws_files:
+        if not rerun:
+            return f"Missing workspace files for {ws_path}"
         try:
             with open(os.devnull, "w") as f:
                 old_stderr = sys.stderr
@@ -56,20 +77,15 @@ def check_demo_ws(ws_path):
 
 
 if __name__ == "__main__":
-    os.chdir(Path(__file__).resolve().parent.parent / demo_dir)
+    os.chdir(args.root_dir)
     ops.detect_plugins()
     errors = []
-    for ws_file in sys.argv[1:]:
-        ws_path = Path(ws_file)
-        if (
-            ws_path.is_relative_to(demo_dir)
-            and ws_file.endswith(".lynxkite.json")
-            and ".workspace_files" not in ws_file
-            and "generated_samples" not in ws_file
-        ):
-            e = check_demo_ws(ws_path.relative_to(demo_dir))
-            if e:
-                errors.append(e)
+    for ws_file in args.filenames:
+        # From the "workspace.json" file go to the "MyWorkspace.lynxkite" directory.
+        ws_path = Path(ws_file).parent
+        e = check_demo_ws(ws_path.relative_to(args.root_dir), args.rerun)
+        if e:
+            errors.append(e)
     if errors:
         print("Errors found in demo workspaces:")
         for e in errors:

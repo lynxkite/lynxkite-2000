@@ -1,6 +1,6 @@
 {
   "files": {
-    "includes": ["**", "!**/*.lynxkite.json"]
+    "includes": ["**", "!**/*.lynxkite.json", "!**/*.lynxkite"]
   },
   "css": {
     "parser": {

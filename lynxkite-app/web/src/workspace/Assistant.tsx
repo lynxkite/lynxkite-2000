@@ -6,6 +6,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
+import { apiFetch } from "../common";
 import type { useCRDTWorkspace } from "./crdt";
 
 function checkIfChromiumMissingKeys() {
@@ -83,6 +84,7 @@ export default function Assistant(props: {
     transport: new TextStreamChatTransport({
       api: "/api/assistant/stream",
       body: { workspace: workspacePath },
+      fetch: apiFetch,
     }),
   });
 

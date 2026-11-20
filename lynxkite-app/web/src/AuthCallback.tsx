@@ -1,4 +1,4 @@
-// This component handles the callback from the authentication provider (e.g., Keycloak).
+// This component handles the callback from the authentication provider (Keycloak, Auth0 or any OIDC provider).
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { completeLoginCallback } from "./common.ts";

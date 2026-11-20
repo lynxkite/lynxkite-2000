@@ -34,7 +34,7 @@ class BoxSkill:
         self.function_name = (
             op.python_function_name.split(".")[-1] if op.python_function_name else ""
         )
-        self.code = inspect.getsource(op.func) if op.func else ""
+        self.code = inspect.getsource(op.func)
         self.placeholder_function_name = getattr(op, "placeholder_function_name", False)
         paramdocs = doc["parameters"]["value"] if "parameters" in doc else []
         paramdocs = {p["name"]: p["description"] for p in paramdocs}

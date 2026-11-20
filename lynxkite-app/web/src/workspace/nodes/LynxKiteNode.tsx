@@ -306,7 +306,7 @@ function LynxKiteNodeComponent(props: LynxKiteNodeProps) {
                   {data.message}
                 </div>
               )}
-              {data.error === "Unknown operation." ? (
+              {data.error?.startsWith("Unknown operation") ? (
                 <UnknownOperationNode op_id={data.op_id} onChange={setNewOpId} />
               ) : (
                 <>

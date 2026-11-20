@@ -69,6 +69,7 @@ test("undo/redo grouping boxes", async () => {
   const consoleMessages: { type: string; text: string }[] = [];
   workspace.page.on("console", (msg) => {
     if (msg.type() === "error" || msg.type() === "warning") {
+      if (msg.text().includes("React Flow Pro")) return;
       consoleMessages.push({ type: msg.type(), text: msg.text() });
     }
   });

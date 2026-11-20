@@ -61,7 +61,7 @@ test("Favorites follow renames and deletes", async ({ page }) => {
 
 test("Recently opened workspaces are listed and removed on delete", async ({ page }) => {
   const workspaceName = `SidebarRecent-${Date.now()}`;
-  const path = `${SANDBOX}/${workspaceName}.lynxkite.json`;
+  const path = `${SANDBOX}/${workspaceName}.lynxkite`;
   const splash = await Splash.open(page);
   try {
     const workspace = await splash.createWorkspace(workspaceName);

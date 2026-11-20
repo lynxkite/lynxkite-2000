@@ -32,9 +32,10 @@ test("unknown operation", async () => {
   await graphBox.getByLabel("n", { exact: true }).fill("10");
   await workspace.setEnv("Pillow");
   const csvBox = workspace.getBox("Scale-free graph 1");
-  await expect(csvBox.locator(".title")).toContainText("Unknown operation.");
+  const message = "Unknown operation: NetworkX > Generators > Directed > Scale-free graph";
+  await expect(csvBox.locator(".title")).toContainText(message);
   await expect(csvBox.locator(".node-search")).toBeVisible();
   await workspace.setEnv("LynxKite Graph Analytics");
-  await expect(csvBox.locator(".title")).not.toContainText("Unknown operation.");
+  await expect(csvBox.locator(".title")).not.toContainText(message);
   await expect(csvBox.locator(".node-search")).not.toBeVisible();
 });
