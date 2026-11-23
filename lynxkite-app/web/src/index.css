@@ -1134,10 +1134,36 @@ svg {
     padding: 0 4px;
   }
 
+  .rail-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--rail-panel-fg);
+  }
+
+  .rail-home {
+    display: flex;
+    flex: 0 0 auto;
+    padding: 4px;
+    border-radius: 6px;
+
+    &:hover {
+      background: var(--accent-fill);
+    }
+
+    img {
+      height: 1.6em;
+    }
+  }
+
   .rail-title {
-    font-size: 0.95rem;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 1.05rem;
     font-weight: 600;
-    color: var(--rail-fg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .rail-collapse {
@@ -1313,6 +1339,19 @@ svg {
       color: inherit;
     }
 
+    .node-search input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+      border-radius: 6px;
+
+      &:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+    }
+
     .node-search input,
     .assistant-editor {
       background: var(--navy-900);
@@ -1345,6 +1384,12 @@ svg {
 
     .back-button,
     .search-result-category:not(.selected) {
+      background-color: var(--navy-800);
+      color: var(--rail-panel-fg);
+    }
+
+    .search-result-category.selected {
+      background-color: var(--accent);
       color: var(--navy-800);
     }
 

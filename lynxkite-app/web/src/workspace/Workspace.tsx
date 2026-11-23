@@ -42,8 +42,8 @@ import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Settings from "~icons/tabler/settings.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
-import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceEdge, WorkspaceNode } from "../apiTypes.ts";
+import favicon from "../assets/favicon.ico";
 import {
   apiJson,
   getConfig,
@@ -98,7 +98,6 @@ const RestartIcon = memo(RotateClockwise);
 const RobotIcon = memo(Robot);
 const PlayIcon = memo(Play);
 const PauseIcon = memo(Pause);
-const CloseIcon = memo(Close);
 const ChangeTypeIcon = memo(Transfer);
 const BoxesIcon = memo(Apps);
 const SettingsIcon = memo(Settings);
@@ -830,7 +829,21 @@ function LynxKiteFlow() {
               <nav className={`tool-rail${barOpen ? "" : " closed"}`} inert={!barOpen}>
                 <div className="rail-inner">
                   <div className="rail-header">
-                    <span className="rail-title">Tools</span>
+                    <div className="rail-heading">
+                      <Tooltip doc="Close workspace and go back to the folder">
+                        <Link
+                          className="rail-home"
+                          to={`/dir/${parentDir
+                            .split("/")
+                            .map((segment) => encodeURIComponent(segment))
+                            .join("/")}`}
+                          aria-label="close"
+                        >
+                          <img alt="" src={favicon} />
+                        </Link>
+                      </Tooltip>
+                      <span className="rail-title">{shortPath}</span>
+                    </div>
                     <Tooltip doc="Hide tools">
                       <button
                         type="button"
@@ -1042,19 +1055,6 @@ function LynxKiteFlow() {
                   <div className="rail-spacer" />
                   <div className="rail-footer">
                     <UserMenu dropdownClass="dropdown-left dropdown-end" />
-                    <Tooltip doc="Close workspace">
-                      <Link
-                        className="activity-button"
-                        to={`/dir/${parentDir
-                          .split("/")
-                          .map((segment) => encodeURIComponent(segment))
-                          .join("/")}`}
-                        aria-label="close"
-                      >
-                        <CloseIcon />
-                        <span>Close workspace</span>
-                      </Link>
-                    </Tooltip>
                   </div>
                 </div>
               </nav>
