@@ -32,6 +32,13 @@ The LynxKite Assistant can:
 
 In your messages you can also reference the boxes you have selected with a click of a button, so the Assistant knows which boxes you're talking about.
 
+## Modes
+You can switch between two modes at the top of the input box:
+- **Agent** mode can make changes to the workspace. It needs write access to the workspace.
+  The conversation is saved in the workspace.
+- **Ask** mode can only read the workspace. Use it to explore the workspace and ask questions about it.
+  It is available to users with read-only access too. Conversations in Ask mode are not saved.
+
 ## Internet access setup
 If you want the agent to be able to access the internet you will need a service that provides this feature to the agent.
 The agent's tools communicate via FireCrawl's v2 API, any service that supports it should work. Here are some recommended options.
