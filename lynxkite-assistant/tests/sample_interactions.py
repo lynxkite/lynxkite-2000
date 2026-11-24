@@ -129,7 +129,7 @@ async def test_assistant_stream(skip_existing=False):
         )
         print("User:")
         print(inp.prompt)
-        resp = await assistant.assistant_stream(req, skill_root=".agents/skills")
+        resp = await assistant.assistant_stream(req)
         resp_chunks = []
         async for chunk in resp.body_iterator:
             resp_chunks.append(chunk)
@@ -141,6 +141,7 @@ async def test_assistant_stream(skip_existing=False):
 if __name__ == "__main__":
     ops.detect_plugins()
     ops.user_script_root = Path()
+    assistant.SKILL_ROOT = ".agents/skills"
     workspace_backend.crdt = None  # type: ignore
     assistant.crdt = None  # type: ignore
     if len(sys.argv) > 1 and sys.argv[1] == "skip":
