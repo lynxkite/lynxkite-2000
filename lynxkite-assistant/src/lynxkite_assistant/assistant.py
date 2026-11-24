@@ -6,19 +6,29 @@ import fastapi
 import openai
 import pydantic
 import requests
-from typing import cast
+from typing import Literal, cast
 from pathlib import Path
 from fastapi.responses import StreamingResponse
 import deepagents
 from deepagents import backends
+from deepagents.backends.protocol import BackendProtocol
+from langchain_core.language_models import BaseChatModel
 from .workspace_backend import WorkspaceBackend
 from lynxkite_core import workspace
 from lynxkite_core.workspace_paths import workspace_data_dir
-from .instructions import SYSTEM_PROMPT, INTERNET_ACCESS_INFO
+from .instructions import ASK_SYSTEM_PROMPT, SYSTEM_PROMPT, INTERNET_ACCESS_INFO
 
 ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
+SKILL_ROOT: str = "../.agents/skills"
+# Ask mode must not change anything, so the write tools are denied everywhere.
+# deepagents matches without DOTGLOB, so paths with hidden parts (like /skills/.a/b) are not covered.
+ASK_MODE_PERMISSIONS = [
+    deepagents.FilesystemPermission(operations=["write"], paths=["/**"], mode="deny")
+]
 
 router = fastapi.APIRouter()
+
+AssistantMode = Literal["ask", "agent"]
 
 
 class AssistantMessage(pydantic.BaseModel):
@@ -30,6 +40,8 @@ class AssistantMessage(pydantic.BaseModel):
 class AssistantCompletionRequest(pydantic.BaseModel):
     workspace: str
     messages: list[AssistantMessage]
+    # Ask mode can only read the workspace. Agent mode can edit it.
+    mode: AssistantMode = "agent"
 
 
 def _extract_text_content(message: AssistantMessage) -> str:
@@ -121,11 +133,13 @@ def map_web_page(url: str, params: dict | None = None):
         return f"Error mapping web page: {e}"
 
 
+def _memory_dir(workspace_path: str) -> Path:
+    return Path(workspace_path).parent / ".assistant_memory" / Path(workspace_path).name
+
+
 def _init_memory(workspace_path: str) -> Path:
     """Initialize the memory directory for a workspace."""
-    memory_files_path = (
-        Path(workspace_path).parent / ".assistant_memory" / Path(workspace_path).name
-    )
+    memory_files_path = _memory_dir(workspace_path)
     if memory_files_path.exists():
         memory_dirs = sorted(
             [d for d in memory_files_path.iterdir() if d.is_dir()],
@@ -139,50 +153,68 @@ def _init_memory(workspace_path: str) -> Path:
     return memory_files_path
 
 
-@router.post("/api/assistant/stream")
-async def assistant_stream(
-    req: AssistantCompletionRequest, skill_root="../.agents/skills"
-) -> StreamingResponse:
-    model = os.environ.get("LYNXKITE_ASSISTANT_MODEL")
-    workspace_backend = WorkspaceBackend(req.workspace)
-    routes = {
-        "/skills/": backends.FilesystemBackend(root_dir=skill_root, virtual_mode=True)
+def _get_model() -> str | BaseChatModel | None:
+    return os.environ.get("LYNXKITE_ASSISTANT_MODEL")
+
+
+def create_agent(
+    workspace_path: str,
+    mode: AssistantMode,
+    model: str | BaseChatModel | None,
+):
+    """Creates the agent. In Ask mode it can read the workspace files but cannot change anything."""
+    read_only = mode == "ask"
+    routes: dict[str, BackendProtocol] = {
+        "/skills/": backends.FilesystemBackend(root_dir=SKILL_ROOT, virtual_mode=True)
     }
-    workspace_files_path = workspace_data_dir(req.workspace)
+    workspace_files_path = workspace_data_dir(workspace_path)
     if workspace_files_path.exists():
         routes["/workspace_files/"] = backends.FilesystemBackend(
             root_dir=str(workspace_files_path), virtual_mode=True
         )
-    memory_files_path = _init_memory(req.workspace)
-    routes["/previous_states/"] = backends.FilesystemBackend(
-        root_dir=str(memory_files_path), virtual_mode=True
+    # Initializing the memory deletes old states, so we only do it when we are going to write.
+    memory_files_path = (
+        _memory_dir(workspace_path) if read_only else _init_memory(workspace_path)
     )
+    if memory_files_path.exists():
+        routes["/previous_states/"] = backends.FilesystemBackend(
+            root_dir=str(memory_files_path), virtual_mode=True
+        )
     backend = backends.CompositeBackend(
-        default=workspace_backend,
-        routes=routes,
+        default=WorkspaceBackend(workspace_path), routes=routes
     )
     tools = [internet_search, scrape_web_page, map_web_page] if web_access_url else []
-    agent = deepagents.create_deep_agent(
+    system_prompt = ASK_SYSTEM_PROMPT if read_only else SYSTEM_PROMPT
+    if web_access_url:
+        system_prompt += INTERNET_ACCESS_INFO
+    return deepagents.create_deep_agent(
         model=model,
         backend=backend,
         skills=["/skills"],
         tools=tools,
-        system_prompt=(SYSTEM_PROMPT + INTERNET_ACCESS_INFO)
-        if web_access_url
-        else SYSTEM_PROMPT,
+        system_prompt=system_prompt,
+        permissions=ASK_MODE_PERMISSIONS if read_only else None,
     )
+
+
+@router.post("/api/assistant/stream")
+async def assistant_stream(req: AssistantCompletionRequest) -> StreamingResponse:
+    agent = create_agent(req.workspace, req.mode, _get_model())
+    # Saving the chat history needs write access, so we only do it in Agent mode.
+    save_history = req.mode == "agent"
     request_messages: list[dict[str, str]] = []
     for msg in req.messages:
         content = _extract_text_content(msg).strip()
         if not content:
             continue
         request_messages.append({"role": msg.role, "content": content})
-    ws = workspace.Workspace.load(req.workspace)
-    ws.assistant_messages = [
-        workspace.WorkspaceAssistantMessage.model_validate(message)
-        for message in request_messages
-    ]
-    ws.save(req.workspace)
+    if save_history:
+        ws = workspace.Workspace.load(req.workspace)
+        ws.assistant_messages = [
+            workspace.WorkspaceAssistantMessage.model_validate(message)
+            for message in request_messages
+        ]
+        ws.save(req.workspace)
 
     async def generate():
         response_message = []
@@ -199,6 +231,8 @@ async def assistant_stream(
             if delta:
                 yield delta
                 response_message.append(delta)
+        if not save_history:
+            return
         ws = workspace.Workspace.load(req.workspace)
         if not ws.assistant_messages:
             ws.assistant_messages = []
