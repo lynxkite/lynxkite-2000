@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import useSpeechToText from "react-hook-speech-to-text";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import MessageQuestionIcon from "~icons/tabler/message-question.jsx";
 import MicrophoneIcon from "~icons/tabler/microphone.jsx";
 import RobotIcon from "~icons/tabler/robot.jsx";
+import WandIcon from "~icons/tabler/wand.jsx";
 import { apiFetch } from "../common";
 import type { useCRDTWorkspace } from "./crdt";
 
@@ -26,12 +28,43 @@ function checkIfChromiumMissingKeys() {
   return false;
 }
 
+// Ask mode can only read the workspace. Agent mode can edit it.
+type AssistantMode = "ask" | "agent";
+
+const MODES: {
+  mode: AssistantMode;
+  label: string;
+  icon: typeof RobotIcon;
+  tooltip: string;
+  placeholder: string;
+}[] = [
+  {
+    mode: "ask",
+    label: "Ask",
+    icon: MessageQuestionIcon,
+    tooltip: "Ask questions about the workspace. Ask mode cannot make changes.",
+    placeholder:
+      "Ask questions about the workspace. Ask mode cannot make changes and does not save the conversation.",
+  },
+  {
+    mode: "agent",
+    label: "Agent",
+    icon: WandIcon,
+    tooltip: "Let the assistant edit the workspace.",
+    placeholder: "Ask to make changes to the workspace, create custom boxes, or for general help.",
+  },
+];
+
 export default function Assistant(props: {
   crdtWorkspace: ReturnType<typeof useCRDTWorkspace>;
   selectedNodeIds: string[];
   workspacePath: string;
+  canWrite: boolean;
 }) {
-  const { crdtWorkspace, selectedNodeIds, workspacePath } = props;
+  const { crdtWorkspace, selectedNodeIds, workspacePath, canWrite } = props;
+  const [selectedMode, setSelectedMode] = useState<AssistantMode>("agent");
+  // Agent mode needs write access.
+  const mode: AssistantMode = canWrite ? selectedMode : "ask";
   const crdtWorkspaceRef = useRef(crdtWorkspace);
   crdtWorkspaceRef.current = crdtWorkspace;
   const [input, setInput] = useState("");
@@ -164,10 +197,13 @@ export default function Assistant(props: {
         },
       ]);
     }
-    sendMessage({
-      text: prompt,
-      metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
-    });
+    sendMessage(
+      {
+        text: prompt,
+        metadata: { selected_node_ids: includeSelectedNodes ? selectedNodeIds : undefined },
+      },
+      { body: { mode } },
+    );
     if (isRecording && stopRecording) {
       stopSpeechToText();
     }
@@ -257,11 +293,37 @@ export default function Assistant(props: {
           submitInput(prompt);
         }}
       >
+        <fieldset className="assistant-mode" aria-label="Assistant mode">
+          {MODES.map((m) => {
+            const disabled = m.mode === "agent" && !canWrite;
+            const Icon = m.icon;
+            return (
+              <label
+                key={m.mode}
+                className={`assistant-mode-option ${mode === m.mode ? "is-active" : ""} ${
+                  disabled ? "is-disabled" : ""
+                }`}
+                title={disabled ? "Agent mode needs write access to the workspace." : m.tooltip}
+              >
+                <input
+                  type="radio"
+                  name="assistant-mode"
+                  value={m.mode}
+                  checked={mode === m.mode}
+                  disabled={disabled}
+                  onChange={() => setSelectedMode(m.mode)}
+                />
+                <Icon aria-hidden="true" />
+                {m.label}
+              </label>
+            );
+          })}
+        </fieldset>
         <div
           ref={editorRef}
           className="assistant-editor"
           aria-disabled={status !== "ready"}
-          data-placeholder="Ask to make changes to the workspace, create custom boxes, or for general help."
+          data-placeholder={MODES.find((m) => m.mode === mode)?.placeholder}
           contentEditable={!isRecording}
           suppressContentEditableWarning
           onInput={(event) => setInput(event.currentTarget.textContent ?? "")}
