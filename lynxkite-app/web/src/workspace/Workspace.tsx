@@ -42,6 +42,7 @@ import Robot from "~icons/tabler/robot.jsx";
 import RotateClockwise from "~icons/tabler/rotate-clockwise.jsx";
 import Settings from "~icons/tabler/settings.jsx";
 import Transfer from "~icons/tabler/transfer.jsx";
+import Close from "~icons/tabler/x.jsx";
 import type { Op as OpsOp, WorkspaceEdge, WorkspaceNode } from "../apiTypes.ts";
 import favicon from "../assets/favicon.ico";
 import {
@@ -861,44 +862,32 @@ function LynxKiteFlow() {
                   {canWrite && crdt?.ws && (
                     <>
                       <div className="rail-tabs" role="tablist">
-                        <Tooltip doc="Boxes: click or drag a box to add it">
-                          <button
-                            type="button"
-                            role="tab"
-                            aria-selected={activePanel === "boxes"}
-                            className={`rail-tab${activePanel === "boxes" ? " active" : ""}`}
-                            onClick={() => setActivePanel("boxes")}
-                          >
-                            <BoxesIcon />
-                            <span>Boxes</span>
-                          </button>
-                        </Tooltip>
+                        <RailTab
+                          doc="Boxes: click or drag a box to add it"
+                          label="Boxes"
+                          active={activePanel === "boxes"}
+                          onClick={() => setActivePanel("boxes")}
+                        >
+                          <BoxesIcon />
+                        </RailTab>
                         {config.assistant_available && (
-                          <Tooltip doc="Chat with the assistant">
-                            <button
-                              type="button"
-                              role="tab"
-                              aria-selected={activePanel === "assistant"}
-                              className={`rail-tab${activePanel === "assistant" ? " active" : ""}`}
-                              onClick={() => setActivePanel("assistant")}
-                            >
-                              <RobotIcon />
-                              <span>Chat</span>
-                            </button>
-                          </Tooltip>
-                        )}
-                        <Tooltip doc="Run controls, editing tools and settings">
-                          <button
-                            type="button"
-                            role="tab"
-                            aria-selected={activePanel === "others"}
-                            className={`rail-tab${activePanel === "others" ? " active" : ""}`}
-                            onClick={() => setActivePanel("others")}
+                          <RailTab
+                            doc="Chat with the assistant"
+                            label="Chat"
+                            active={activePanel === "assistant"}
+                            onClick={() => setActivePanel("assistant")}
                           >
-                            <SettingsIcon />
-                            <span>Others</span>
-                          </button>
-                        </Tooltip>
+                            <RobotIcon />
+                          </RailTab>
+                        )}
+                        <RailTab
+                          doc="Run controls, editing tools and settings"
+                          label="Others"
+                          active={activePanel === "others"}
+                          onClick={() => setActivePanel("others")}
+                        >
+                          <SettingsIcon />
+                        </RailTab>
                       </div>
                       {activePanel === "boxes" && (
                         <div className="rail-panel boxes-panel">
@@ -1063,6 +1052,29 @@ function LynxKiteFlow() {
         )}
       </div>
     </div>
+  );
+}
+
+function RailTab(props: {
+  label: string;
+  doc: string;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip doc={props.doc}>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={props.active}
+        className={`rail-tab${props.active ? " active" : ""}`}
+        onClick={props.onClick}
+      >
+        {props.children}
+        <span>{props.label}</span>
+      </button>
+    </Tooltip>
   );
 }
 
