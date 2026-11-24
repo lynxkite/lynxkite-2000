@@ -29,7 +29,7 @@ test("sends the workspace path for a new workspace", async () => {
     });
   });
 
-  await page.getByRole("button", { name: "Show toolbar" }).click();
+  await workspace.openBar();
   await page.getByRole("tab", { name: "Chat" }).click();
   const editor = page.locator(".assistant-editor");
   await expect(editor).toBeVisible();

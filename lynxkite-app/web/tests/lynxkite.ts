@@ -28,6 +28,8 @@ export class Workspace {
 
   async openBar() {
     const toggle = this.page.getByRole("button", { name: "Show toolbar" });
+    // Wait for the toolbar to render, either collapsed (toggle) or open (tabs).
+    await expect(toggle.or(this.page.getByRole("tab", { name: "Others" }))).toBeVisible();
     if (await toggle.isVisible()) {
       await toggle.click();
     }

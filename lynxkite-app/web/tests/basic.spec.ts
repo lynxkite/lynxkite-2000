@@ -20,9 +20,7 @@ test("Slash opens the box panel and focuses the search", async () => {
   await page.keyboard.press("/");
   const search = page.locator(".boxes-panel .node-search input");
   await expect(search).toBeFocused();
-  // The activity bar button closes the panel again.
-  await page.locator('[data-tooltip-html*="Boxes:"] button').click();
-  await expect(page.locator(".boxes-panel")).not.toBeVisible();
+  await expect(page.getByRole("tab", { name: "Boxes" })).toHaveAttribute("aria-selected", "true");
 });
 
 test("Drag a box from the panel onto the workspace", async () => {
