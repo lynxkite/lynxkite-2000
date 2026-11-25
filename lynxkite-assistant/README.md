@@ -34,7 +34,7 @@ In your messages you can also reference the boxes you have selected with a click
 
 ## Internet access setup
 If you want the agent to be able to access the internet you will need a service that provides this feature to the agent.
-The agent's tools communicate via FireCrawl's API, any service that uses this should work. Here are some recommended options.
+The agent's tools communicate via FireCrawl's v2 API, any service that supports it should work. Here are some recommended options.
 ### Hosted
 You can choose to use a hosted service: these require minimal setup but only give access to a limited amount of searches for free.
 - [FireCrawl](https://www.firecrawl.dev/): requires API key, API access through <https://api.firecrawl.dev>
