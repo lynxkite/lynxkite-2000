@@ -532,16 +532,19 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     if not workspace_paths.is_workspace_bundle(room_name):
         await websocket.close(code=1008)
         return
-    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+    if not await ws_auth.accept(scope, websocket._receive, websocket._send, room_name):
+        return
+    user = ws_auth.user_label(scope)
+    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server, user)
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
-    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
     try:
-        await ws_auth.serve(
+        await ws_auth.serve_accepted(
             ws_websocket_server, scope, websocket._receive, websocket._send, room_name
         )
     finally:
-        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
+        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server, user)
         if enterprise_backend is not None:
             enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
 

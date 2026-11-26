@@ -11,7 +11,7 @@ import Pause from "~icons/tabler/player-pause-filled";
 import Play from "~icons/tabler/player-play-filled";
 import Stop from "~icons/tabler/player-stop-filled";
 import UserFilled from "~icons/tabler/user-filled";
-import { getConfig } from "./common.ts";
+import { apiFetch, getConfig, useFolderPermissions } from "./common.ts";
 import ManagementPage from "./ManagementPage";
 import {
   formatWorkspaceProgressSuffix,
@@ -40,7 +40,7 @@ export default function ProgressPage() {
   async function scaleGpuService(gpuService: any, newReplicaCount: number) {
     const targetReplicas = Math.max(0, newReplicaCount);
     try {
-      await fetch("/api/scale_gpu_service", {
+      await apiFetch("/api/scale_gpu_service", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -122,62 +122,77 @@ function Workspaces(props: {
         </tr>
       </thead>
       <tbody>
-        {props.workspaces.map((ws) => {
-          const roomName = ws.room_name || ws.name;
-          const progress = getWorkspaceProgress(ws);
-          const tqdm = progress.activeNode?.tqdm;
-          const suffix = formatWorkspaceProgressSuffix(progress);
-          const showPause =
-            progress.status === "active" ||
-            progress.status === "running" ||
-            progress.status === "paused";
-          return (
-            <tr key={ws.name}>
-              <td className="workspace-name">{ws.name}</td>
-              <td className="workspace-user">{ws.user}</td>
-              <td className="workspace-progress">
-                <div className="progress-details">
-                  {progress.activeNode && (
-                    <span className="active-node-label">
-                      {progress.activeNode.title}
-                      {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
-                    </span>
-                  )}
-                  <progress
-                    className={`progress progress-${workspaceProgressColor(progress.status)} w-50`}
-                    value={progress.percent}
-                    max={100}
-                  />
-                </div>
-              </td>
-              <td className="workspace-eta">
-                {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
-                {suffix && <span> {suffix}</span>}
-              </td>
-              <td className="workspace-resources">{ws.gpus || "—"}</td>
-              <td className="table-actions">
-                {showPause && (
-                  <button
-                    className="btn btn-sm"
-                    title={progress.paused ? "Resume" : "Pause"}
-                    onClick={() => props.onPause(roomName, !progress.paused)}
-                  >
-                    {progress.paused ? <Play /> : <Pause />}
-                  </button>
-                )}
-                <button
-                  className="btn btn-sm"
-                  title="Stop (reset all boxes)"
-                  onClick={() => props.onStop(roomName)}
-                >
-                  <Stop />
-                </button>
-              </td>
-            </tr>
-          );
-        })}
+        {props.workspaces.map((ws) => (
+          <WorkspaceRow key={ws.name} ws={ws} onPause={props.onPause} onStop={props.onStop} />
+        ))}
       </tbody>
     </table>
+  );
+}
+
+function WorkspaceRow({
+  ws,
+  onPause,
+  onStop,
+}: {
+  ws: any;
+  onPause: (roomName: string, paused: boolean) => void;
+  onStop: (roomName: string) => void;
+}) {
+  const roomName = ws.room_name || ws.name;
+  const canWrite = useFolderPermissions(roomName).write;
+  const progress = getWorkspaceProgress(ws);
+  const tqdm = progress.activeNode?.tqdm;
+  const suffix = formatWorkspaceProgressSuffix(progress);
+  const showPause =
+    progress.status === "active" || progress.status === "running" || progress.status === "paused";
+  return (
+    <tr>
+      <td className="workspace-name">{ws.name}</td>
+      <td className="workspace-user">{ws.user}</td>
+      <td className="workspace-progress">
+        <div className="progress-details">
+          {progress.activeNode && (
+            <span className="active-node-label">
+              {progress.activeNode.title}
+              {tqdm?.total != null && ` (${tqdm.n}/${tqdm.total})`}
+            </span>
+          )}
+          <progress
+            className={`progress progress-${workspaceProgressColor(progress.status)} w-50`}
+            value={progress.percent}
+            max={100}
+          />
+        </div>
+      </td>
+      <td className="workspace-eta">
+        {progress.boxesTotal > 0 && `${progress.boxesDone}/${progress.boxesTotal}`}
+        {suffix && <span> {suffix}</span>}
+      </td>
+      <td className="workspace-resources">{ws.gpus || "—"}</td>
+      <td className="table-actions">
+        {canWrite && (
+          <>
+            {showPause && (
+              <button
+                className="btn btn-sm"
+                title={progress.paused ? "Resume" : "Pause"}
+                onClick={() => onPause(roomName, !progress.paused)}
+              >
+                {progress.paused ? <Play /> : <Pause />}
+              </button>
+            )}
+            <button
+              className="btn btn-sm"
+              title="Stop (reset all boxes)"
+              onClick={() => onStop(roomName)}
+            >
+              <Stop />
+            </button>
+          </>
+        )}
+      </td>
+    </tr>
   );
 }
 
@@ -186,6 +201,8 @@ function GpuServices(props: {
   scaleGpuService: (gpuService: any, replicas: number) => void;
 }) {
   const [showUsers, setShowUsers] = useState({} as Record<string, boolean>);
+  // GPU services are shared by the whole deployment.
+  const canScale = useFolderPermissions("").write;
   if ((props.gpuServices?.length ?? 0) === 0) {
     return <div>No GPU services deployed.</div>;
   }
@@ -231,27 +248,35 @@ function GpuServices(props: {
                 : gpuService.status}{" "}
             </td>
             <td className="table-actions">
-              <button
-                className="btn btn-sm"
-                title="Scale up"
-                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested + 1)}
-              >
-                <ScaleUp />
-              </button>
-              <button
-                className="btn btn-sm"
-                title="Scale down"
-                onClick={() => props.scaleGpuService(gpuService, gpuService.replicasRequested - 1)}
-              >
-                <ScaleDown />
-              </button>
-              <button
-                className="btn btn-sm"
-                title="Stop"
-                onClick={() => props.scaleGpuService(gpuService, 0)}
-              >
-                <Stop />
-              </button>
+              {canScale && (
+                <>
+                  <button
+                    className="btn btn-sm"
+                    title="Scale up"
+                    onClick={() =>
+                      props.scaleGpuService(gpuService, gpuService.replicasRequested + 1)
+                    }
+                  >
+                    <ScaleUp />
+                  </button>
+                  <button
+                    className="btn btn-sm"
+                    title="Scale down"
+                    onClick={() =>
+                      props.scaleGpuService(gpuService, gpuService.replicasRequested - 1)
+                    }
+                  >
+                    <ScaleDown />
+                  </button>
+                  <button
+                    className="btn btn-sm"
+                    title="Stop"
+                    onClick={() => props.scaleGpuService(gpuService, 0)}
+                  >
+                    <Stop />
+                  </button>
+                </>
+              )}
             </td>
           </tr>
         ))}
