@@ -13,11 +13,16 @@ import fastapi
 import pycrdt
 import pycrdt.websocket
 import uvicorn.protocols.utils
-from websockets.exceptions import ConnectionClosedOK
-from lynxkite_core import workspace
+from lynxkite_core import workspace, workspace_paths
 from lynxkite_core.workspace_progress import compute_workspace_progress, workspace_display_name
+from websockets.exceptions import ConnectionClosedOK
 
-_active_workspace_ws_connections: dict[str, int] = {}
+from . import ws_auth
+
+# The deployment-wide feed. Every other room is a workspace path and only shows that workspace.
+PROGRESS_ROOM = "progress"
+# Room name -> user label of each open connection (None when auth is off).
+_active_workspace_ws_connections: dict[str, list[str | None]] = {}
 _progress_ydoc: pycrdt.Doc | None = None
 _run_started_at: dict[str, float] = {}
 _progress_server: ProgressWebsocketServer | None = None
@@ -39,8 +44,9 @@ class ProgressWebsocketServer(pycrdt.websocket.WebsocketServer):
         global _progress_ydoc
         ydoc = pycrdt.Doc()
         ydoc["workspaces"] = pycrdt.Map()
-        ydoc["gpu_services"] = pycrdt.Text()
-        _progress_ydoc = ydoc
+        if name == PROGRESS_ROOM:
+            ydoc["gpu_services"] = pycrdt.Text()
+            _progress_ydoc = ydoc
         return pycrdt.websocket.YRoom(ydoc=ydoc, exception_handler=ws_exception_handler)
 
     async def get_room(self, name: str) -> pycrdt.websocket.YRoom:
@@ -78,21 +84,22 @@ def _connected_workspace_rooms(server) -> list[tuple[str, Any]]:
     ]
 
 
-def _update_workspace_ws_connection(room_name: str, delta: int) -> None:
-    count = _active_workspace_ws_connections.get(room_name, 0) + delta
-    if count <= 0:
-        _active_workspace_ws_connections.pop(room_name, None)
-    else:
-        _active_workspace_ws_connections[room_name] = count
+def _connected_users(room_name: str) -> str | None:
+    users = sorted({u for u in _active_workspace_ws_connections.get(room_name, []) if u})
+    return ", ".join(users) or None
 
 
-def on_workspace_connection_open(room_name: str, ws_server) -> None:
-    _update_workspace_ws_connection(room_name, +1)
+def on_workspace_connection_open(room_name: str, ws_server, user: str | None = None) -> None:
+    _active_workspace_ws_connections.setdefault(room_name, []).append(user)
     update_progress_workspaces(ws_server)
 
 
-def on_workspace_connection_close(room_name: str, ws_server) -> None:
-    _update_workspace_ws_connection(room_name, -1)
+def on_workspace_connection_close(room_name: str, ws_server, user: str | None = None) -> None:
+    connections = _active_workspace_ws_connections.get(room_name, [])
+    if user in connections:
+        connections.remove(user)
+    if not connections:
+        _active_workspace_ws_connections.pop(room_name, None)
     update_progress_workspaces(ws_server)
 
 
@@ -112,6 +119,7 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
                 elapsed_seconds=_elapsed_seconds(room_name),
                 gpus=gpus,
             )
+            payload["user"] = _connected_users(room_name)
             if room_name not in _run_started_at and payload["status"] not in (
                 "idle",
                 "done",
@@ -131,6 +139,17 @@ def update_progress_workspaces(ws_server, k8s_workspace_gpus: dict | None = None
         for name in list(ws_map.keys()):
             if name not in entries_by_room:
                 del ws_map[name]
+    if _progress_server is None:
+        return
+    for room_name, room in _progress_server.rooms.items():
+        if room_name == PROGRESS_ROOM:
+            continue
+        room_map: pycrdt.Map = room.ydoc["workspaces"]
+        with room.ydoc.transaction():
+            if room_name in entries_by_room:
+                room_map[room_name] = entries_by_room[room_name]
+            elif room_name in room_map:
+                del room_map[room_name]
 
 
 def update_progress_gpu_services(gpu_services_data: list) -> None:
@@ -189,5 +208,19 @@ def register_routes(router, sanitize_path) -> None:
         if progress_server is None:
             await websocket.close(code=1008)
             return
-        server = pycrdt.websocket.ASGIServer(progress_server)
-        await server({"path": room_name, "type": "websocket"}, websocket._receive, websocket._send)
+        if room_name == PROGRESS_ROOM:
+            # Lists workspaces and users from everywhere, so require read access on the root.
+            acl_path = ""
+        elif workspace_paths.is_workspace_bundle(room_name):
+            acl_path = room_name
+        else:
+            await websocket.close(code=1008)
+            return
+        scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+        if not await ws_auth.accept(scope, websocket._receive, websocket._send, acl_path):
+            return
+        # Only the server writes progress.
+        scope["lynxkite_write"] = False
+        await ws_auth.serve_accepted(
+            progress_server, scope, websocket._receive, websocket._send, room_name
+        )

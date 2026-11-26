@@ -1496,7 +1496,7 @@ svg {
       font-size: 200%;
     }
 
-    > p {
+    > div {
       flex: 1;
 
       h1 {

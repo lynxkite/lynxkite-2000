@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import { apiFetch } from "./common.ts";
+import { apiFetch, getWebSocketParams, useFolderPermissions } from "./common.ts";
 
 export function formatWorkspaceEta(seconds: number | null | undefined): string {
   if (seconds == null) return "";
@@ -97,22 +97,33 @@ export function useProgress(enabled: boolean) {
   const [workspaces, setWorkspaces] = useState<any[]>([]);
   const [gpuServices, setGpuServices] = useState<any[]>([]);
   const [, setTick] = useState(0);
+  // The server only lets in viewers who can read the root folder. Don't connect otherwise.
+  const canRead = useFolderPermissions("").read;
+  const active = enabled && canRead;
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!active) return;
     const interval = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(interval);
-  }, [enabled]);
+  }, [active]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!active) return;
     const doc = new Y.Doc();
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     const provider = new WebsocketProvider(
       `${proto}//${location.host}/ws/progress/crdt`,
       "progress",
       doc,
+      // Tabs can have different users. Don't share the doc between them.
+      { connect: false, disableBc: true },
     );
+    let destroyed = false;
+    getWebSocketParams().then((params) => {
+      if (destroyed) return;
+      provider.params = params;
+      provider.connect();
+    });
     const wsMap = doc.getMap("workspaces");
     const gpuServicesText = doc.getText("gpu_services");
 
@@ -149,12 +160,13 @@ export function useProgress(enabled: boolean) {
     });
 
     return () => {
+      destroyed = true;
       wsMap.unobserve(syncWorkspaces);
       gpuServicesText.unobserve(syncGpuServices);
       provider.destroy();
       doc.destroy();
     };
-  }, [enabled]);
+  }, [active]);
 
   return { workspaces, gpuServices };
 }
