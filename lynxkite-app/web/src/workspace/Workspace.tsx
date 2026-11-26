@@ -155,7 +155,7 @@ function LynxKiteFlow() {
   const shortPath = (isStatic ? (workspace?.path ?? "workspace.lynxkite") : path)!
     .split("/")
     .pop()!
-    .replace(/[.]lynxkite$/, "");
+    .replace(/[.]lynxkite([.]json)?$/, "");
   const nodes = crdt.feNodes;
   const edges = crdt.feEdges;
   const selectedNodeCount = crdt.selectedNodeCount;
@@ -895,7 +895,6 @@ function LynxKiteFlow() {
                             <div className="node-search">
                               <NodeSearchInternal
                                 categoryHierarchy={categoryHierarchy}
-                                onCancel={() => {}}
                                 onClick={(meta) => addNodeFromPanel(meta)}
                                 autoFocus={true}
                                 focusKey={searchFocusKey}
@@ -903,7 +902,7 @@ function LynxKiteFlow() {
                               />
                             </div>
                           ) : (
-                            <div className="side-panel-empty">Loading boxes...</div>
+                            <div className="rail-empty">Loading boxes...</div>
                           )}
                         </div>
                       )}

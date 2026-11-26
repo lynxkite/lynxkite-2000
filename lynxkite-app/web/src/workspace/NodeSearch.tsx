@@ -284,7 +284,7 @@ export const BOX_DRAG_MIME = "application/x-lynxkite-box";
 
 export function NodeSearchInternal(props: {
   categoryHierarchy: Category;
-  onCancel: any;
+  onCancel?: () => void;
   onClick: (op: OpsOp) => void;
   autoFocus?: boolean;
   // Focuses the search input whenever this value changes.
@@ -381,7 +381,7 @@ export function NodeSearchInternal(props: {
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
-      props.onCancel();
+      props.onCancel?.();
     }
   }
 

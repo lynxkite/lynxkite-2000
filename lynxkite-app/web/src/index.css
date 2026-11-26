@@ -1018,7 +1018,7 @@ svg {
   max-width: none;
 }
 
-.side-panel-empty {
+.rail-empty {
   padding: 16px;
   color: #0008;
 }
@@ -1382,7 +1382,6 @@ svg {
       color: var(--text-muted);
     }
 
-    .back-button,
     .search-result-category:not(.selected) {
       background-color: var(--navy-800);
       color: var(--rail-panel-fg);
