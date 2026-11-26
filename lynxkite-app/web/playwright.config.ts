@@ -24,7 +24,8 @@ export default defineConfig({
     },
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      // The box panel takes up space next to the workspace, so the viewport needs to be roomy.
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1920, height: 1080 } },
       dependencies: ["setup"],
     },
   ],

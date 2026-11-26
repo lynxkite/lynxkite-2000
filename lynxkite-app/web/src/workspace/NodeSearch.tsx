@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ArrowLeftIcon from "~icons/tabler/arrow-left.jsx";
 import FolderIcon from "~icons/tabler/folder.jsx";
 import type { Op as OpsOp } from "../apiTypes.ts";
+import { COLORS } from "../common.ts";
 import { docToString } from "./docToString.ts";
 
 export type Catalog = { [op: string]: OpsOp };
@@ -275,60 +276,21 @@ function filteredList(currentLevel: Category | undefined, searchTerm: string): S
   return results;
 }
 
-export default function NodeSearch(props: {
-  categoryHierarchy: Category;
-  onCancel: () => void;
-  onClick: (op: OpsOp) => void;
-  pos: { x: number; y: number };
-}) {
-  // Calculate adjusted position to keep the component visible
-  function adjustPosition(pos: { x: number; y: number }) {
-    const estimatedHeight = 300; // Approximate height of the search component
-    const estimatedWidth = 400; // Approximate width of the search component
-    const padding = 20; // Padding from screen edges
-    let x = pos.x;
-    let y = pos.y;
-
-    // Adjust horizontal position if it would go off-screen
-    if (x + estimatedWidth > window.innerWidth - padding) {
-      x = window.innerWidth - estimatedWidth - padding;
-    }
-    if (x < padding) {
-      x = padding;
-    }
-
-    // Adjust vertical position if it would go off-screen
-    if (y + estimatedHeight > window.innerHeight - padding) {
-      y = window.innerHeight - estimatedHeight - padding;
-    }
-    if (y < padding) {
-      y = padding;
-    }
-
-    return { x, y };
-  }
-  const adjustedPos = adjustPosition(props.pos);
-
-  return (
-    <div
-      className="node-search node-search-panel"
-      style={{
-        top: adjustedPos.y,
-        left: adjustedPos.x,
-        maxHeight: `calc(100vh - ${adjustedPos.y + 10}px)`,
-      }}
-      onMouseDown={(e) => e.preventDefault()}
-    >
-      <NodeSearchInternal {...props} autoFocus={true} />
-    </div>
-  );
+function boxColor(color?: string): string | undefined {
+  return color ? (COLORS[color] ?? color) : undefined;
 }
+
+export const BOX_DRAG_MIME = "application/x-lynxkite-box";
 
 export function NodeSearchInternal(props: {
   categoryHierarchy: Category;
-  onCancel: any;
+  onCancel?: () => void;
   onClick: (op: OpsOp) => void;
   autoFocus?: boolean;
+  // Focuses the search input whenever this value changes.
+  focusKey?: number;
+  // Allows dragging boxes out of the list, for example onto the workspace.
+  draggableBoxes?: boolean;
 }) {
   const [categoryPath, setCategoryPath] = useState<string[]>([]);
   const currentLevel = useMemo(
@@ -344,6 +306,9 @@ export function NodeSearchInternal(props: {
       searchInputRef.current.focus();
     }
   }, []);
+  useEffect(() => {
+    if (props.focusKey) searchInputRef.current?.focus();
+  }, [props.focusKey]);
 
   function handleCategoryClick(category: SearchResult) {
     setCategoryPath([...categoryPath, ...category.parentPath, category.name]);
@@ -416,17 +381,13 @@ export function NodeSearchInternal(props: {
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
-      props.onCancel();
+      props.onCancel?.();
     }
   }
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
     setSelectedIndex(0);
-  }
-  function handleBlur() {
-    if (document.activeElement?.closest(".node-search")) return;
-    props.onCancel();
   }
   function handleClick(e: { preventDefault: () => void }, result: SearchResult) {
     e.preventDefault();
@@ -446,7 +407,6 @@ export function NodeSearchInternal(props: {
         value={searchTerm}
         onChange={handleSearchChange}
         onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
       />
 
       <div className="matches">
@@ -460,7 +420,20 @@ export function NodeSearchInternal(props: {
             ref={(el) => {
               itemRefs.current[index] = el;
             }}
-            onMouseDown={(e) => handleClick(e, result)}
+            style={
+              result.isCategory || result.isBack
+                ? undefined
+                : ({
+                    "--box-color": boxColor((result.item as OpsOp).color),
+                  } as React.CSSProperties)
+            }
+            onClick={(e) => handleClick(e, result)}
+            draggable={props.draggableBoxes && !result.isCategory && !result.isBack}
+            onDragStart={(e) => {
+              const op = result.item as OpsOp;
+              e.dataTransfer.setData(BOX_DRAG_MIME, op.id || op.name);
+              e.dataTransfer.effectAllowed = "copy";
+            }}
             onMouseEnter={() => setSelectedIndex(index)}
           >
             {result.isCategory ? <FolderIcon /> : result.isBack ? <ArrowLeftIcon /> : null}

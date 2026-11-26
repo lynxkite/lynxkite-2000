@@ -29,7 +29,8 @@ test("sends the workspace path for a new workspace", async () => {
     });
   });
 
-  await page.locator('[data-tooltip-html*="Toggle assistant"] button').click();
+  await workspace.openBar();
+  await page.getByRole("tab", { name: "Chat" }).click();
   const editor = page.locator(".assistant-editor");
   await expect(editor).toBeVisible();
   await editor.click();
