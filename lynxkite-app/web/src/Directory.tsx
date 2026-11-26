@@ -122,12 +122,12 @@ function DirectoryError({
 }: {
   error: Error;
   path: string;
-  permissions: { read: boolean; isLoading: boolean };
+  permissions: { read: boolean; isLoading: boolean; error?: unknown };
 }) {
   const user = useAuth();
   const loggedIn = !!user && !user.expired;
   if (permissions.isLoading) return null;
-  if (permissions.read) {
+  if (permissions.read || permissions.error) {
     return (
       <div className="directory-error">
         <AlertCircle style={{ verticalAlign: "baseline" }} />

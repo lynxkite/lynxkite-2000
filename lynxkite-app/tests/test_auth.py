@@ -240,3 +240,29 @@ def test_progress_ws_is_read_only(auth_on, staff_only_acl):
                 if msg[:2] == bytes([YMessageType.SYNC, YSyncMessageType.SYNC_STEP2]):
                     break
         assert "fake.lynxkite.json" not in progress_crdt._progress_ydoc["workspaces"]
+
+
+@pytest.fixture
+def folder_only_acl(tmp_path):
+    """u1 can read the "mine" folder, but not the root."""
+    acl.set_data_root(tmp_path)
+    (tmp_path / "settings.yaml").write_text(
+        yaml.dump({"acl": {"read": ["group:admins"], "write": ["group:admins"]}})
+    )
+    (tmp_path / "mine").mkdir()
+    (tmp_path / "mine" / "settings.yaml").write_text(yaml.dump({"acl": {"read": ["sub:u1"]}}))
+    yield
+    acl.set_data_root(Path())
+
+
+def test_progress_ws_workspace_room_needs_only_workspace_read(auth_on, folder_only_acl):
+    with TestClient(app) as c:
+        for room in ["progress", "other/b.lynxkite"]:
+            with (
+                pytest.raises(WebSocketDisconnect) as e,
+                c.websocket_connect(f"/ws/progress/crdt/{room}?access_token=ok"),
+            ):
+                pass
+            assert e.value.code == 4403
+        with c.websocket_connect("/ws/progress/crdt/mine/a.lynxkite?access_token=ok") as ws:
+            assert ws.receive_bytes()[0] == YMessageType.SYNC
