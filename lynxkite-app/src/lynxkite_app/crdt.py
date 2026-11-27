@@ -1,8 +1,10 @@
 """CRDT is used to synchronize workspace state for backend and frontend(s)."""
 
+import abc
 import asyncio
 import builtins
 import contextlib
+import logging
 import os.path
 import pathlib
 import posixpath
@@ -31,6 +33,19 @@ except ImportError:
 router = fastapi.APIRouter()
 main_loop = None
 WORKSPACE_CHANGED_THROTTLE_SECONDS = 1.0
+
+
+class WorkspaceRoom(pycrdt.websocket.YRoom):
+    def __init__(
+        self,
+        ystore: pycrdt.store.base.BaseYStore,
+        ydoc: pycrdt.Doc,
+        exception_handler: typing.Callable[[Exception, logging.Logger], bool],
+        ws: pycrdt.Map,
+    ):
+        super().__init__(ystore=ystore, ydoc=ydoc, exception_handler=exception_handler)
+        self.ws = ws
+        self.file_change_handler: WorkspaceFileChangeHandler | None = None
 
 
 @dataclass
@@ -118,8 +133,28 @@ async def _flush_workspace_changes_async(
                 task.add_done_callback(_task_result_callback)
 
 
-class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
-    async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
+class InitializingWebsocketServer[T: pycrdt.websocket.YRoom](
+    pycrdt.websocket.WebsocketServer, abc.ABC
+):
+    @abc.abstractmethod
+    async def init_room(self, name: str) -> T: ...
+
+    async def get_room(self, name: str) -> T:
+        """Get a room by name.
+
+        This method overrides the parent get_room method. The original creates an empty room,
+        with no associated Ydoc. Instead, we want to initialize the the room with a Workspace
+        object.
+        """
+        if name not in self.rooms:
+            self.rooms[name] = await self.init_room(name)
+        room = self.rooms[name]
+        await self.start_room(room)
+        return typing.cast(T, room)
+
+
+class WorkspaceWebsocketServer(InitializingWebsocketServer[WorkspaceRoom]):
+    async def init_room(self, name: str) -> WorkspaceRoom:
         """Initialize a room for the workspace with the given name.
 
         The workspace is loaded from ".crdt" if it exists there, or from a JSON file, or a new workspace is created.
@@ -151,11 +186,12 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         # Set the last known version to the current state, so we don't trigger a change event.
         state[name] = WorkspaceRuntimeState()
         state[name].last_known_version = _workspace_fingerprint_from_dict(ws.to_py())
-        room = pycrdt.websocket.YRoom(
-            ystore=ystore, ydoc=ydoc, exception_handler=ws_exception_handler
+        room = WorkspaceRoom(
+            ystore=ystore,
+            ydoc=ydoc,
+            exception_handler=ws_exception_handler,
+            ws=ws,
         )
-        # We hang the YDoc pointer on the room, so it only gets garbage collected when the room does.
-        room.ws = ws  # ty: ignore[unresolved-attribute]
 
         def on_change(changes):
             # Frontend changes that result from typing are delayed to avoid
@@ -180,20 +216,7 @@ class WorkspaceWebsocketServer(pycrdt.websocket.WebsocketServer):
         loop = asyncio.get_running_loop()
         file_change_handler = WorkspaceFileChangeHandler(ws, name, loop)
         file_change_handler.start()
-        room.file_change_handler = file_change_handler  # ty: ignore[unresolved-attribute]
-        return room
-
-    async def get_room(self, name: str) -> pycrdt.websocket.YRoom:
-        """Get a room by name.
-
-        This method overrides the parent get_room method. The original creates an empty room,
-        with no associated Ydoc. Instead, we want to initialize the the room with a Workspace
-        object.
-        """
-        if name not in self.rooms:
-            self.rooms[name] = await self.init_room(name)
-        room = self.rooms[name]
-        await self.start_room(room)
+        room.file_change_handler = file_change_handler
         return room
 
 
@@ -233,7 +256,7 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
             self.loop.call_soon_threadsafe(delete_room, self.workspace_name)
 
 
-class CodeWebsocketServer(WorkspaceWebsocketServer):
+class CodeWebsocketServer(InitializingWebsocketServer[pycrdt.websocket.YRoom]):
     async def init_room(self, name: str) -> pycrdt.websocket.YRoom:
         """Initialize a room for a text document with the given name."""
         crdt_path = pathlib.Path(".crdt")
@@ -453,9 +476,10 @@ async def execute(name: str, ws_crdt: pycrdt.Map, ws_pyd: workspace.Workspace, *
             for nc in ws_crdt["nodes"]:
                 nc["data"]["status"] = "planned"
                 nc["data"]["message"] = None
-        await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
+        result = await ws_pyd.execute(workspace.WorkspaceExecutionContext(app=app))
         save_workspace_from_frontend(name, ws_pyd)
         print(f"Finished running {name} in {ws_pyd.env}.")
+        return result
     finally:
         progress_crdt.mark_run_finished(name)
 
@@ -470,15 +494,15 @@ ws_websocket_server: WorkspaceWebsocketServer
 code_websocket_server: CodeWebsocketServer
 
 
-async def get_room(name):
+async def get_room(name) -> WorkspaceRoom:
     return await ws_websocket_server.get_room(name)
 
 
-def get_room_or_none(name):
+def get_room_or_none(name) -> WorkspaceRoom | None:
     if "ws_websocket_server" not in globals():
         # This can happen if the server is not running, e.g. when running tests.
         return None
-    return ws_websocket_server.rooms.get(name)
+    return typing.cast(WorkspaceRoom | None, ws_websocket_server.rooms.get(name))
 
 
 @contextlib.asynccontextmanager
