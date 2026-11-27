@@ -32,9 +32,9 @@ Only edit the layout of the boxes, do not add or remove any boxes in this file. 
 
 INTERNET_ACCESS_INFO = """
 You have access to the internet through the following tools:
-- internet_search(query: str, params: dict | None = None): Run a web search. params: compatible with the FireCrawl API, will be passed in the request body.
-- scrape_web_page(url: str, params: dict | None = None): Scrape a web page. params: compatible with the FireCrawl API
-- map_web_page(url: str, params: dict | None = None): Input a website and get all the urls on the website. params: compatible with the FireCrawl API.
+- internet_search(query: str, params: dict | None = None): Run a web search. params: compatible with the FireCrawl v2 API, will be passed in the request body. Returns 5 results unless you set "limit". The results are under data.web in the returned JSON.
+- scrape_web_page(url: str, params: dict | None = None): Scrape a web page. params: compatible with the FireCrawl v2 API, will be passed in the request body.
+- map_web_page(url: str, params: dict | None = None): Input a website and get all the urls on the website. params: compatible with the FireCrawl v2 API, will be passed in the request body. The returned JSON lists the links as objects under links: read link["url"] for the address.
 Use these tools to gather information from the web when necessary. You can use them in your code by calling the functions with the appropriate arguments."""
 
 SYSTEM_PROMPT = f"""

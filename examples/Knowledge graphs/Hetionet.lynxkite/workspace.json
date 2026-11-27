@@ -1,0 +1,841 @@
+{
+  "assistant_messages": null,
+  "edges": [
+    {
+      "id": "Import hetionet 1 output Hetionet lookup 1 b",
+      "source": "Import hetionet 1",
+      "sourceHandle": "output",
+      "target": "Hetionet lookup 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Import hetionet 1 output Hetionet lookup 2 b",
+      "source": "Import hetionet 1",
+      "sourceHandle": "output",
+      "target": "Hetionet lookup 2",
+      "targetHandle": "b"
+    },
+    {
+      "id": "Import hetionet 1 output View tables 1 bundle",
+      "source": "Import hetionet 1",
+      "sourceHandle": "output",
+      "target": "View tables 1",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Hetionet lookup 1 output View tables 2 bundle",
+      "source": "Hetionet lookup 1",
+      "sourceHandle": "output",
+      "target": "View tables 2",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "Hetionet lookup 2 output View tables 3 bundle",
+      "source": "Hetionet lookup 2",
+      "sourceHandle": "output",
+      "target": "View tables 3",
+      "targetHandle": "bundle"
+    },
+    {
+      "id": "View tables 2 output Visualize graph 1 b",
+      "source": "View tables 2",
+      "sourceHandle": "output",
+      "target": "Visualize graph 1",
+      "targetHandle": "b"
+    },
+    {
+      "id": "View tables 3 output Visualize graph 2 b",
+      "source": "View tables 3",
+      "sourceHandle": "output",
+      "target": "Visualize graph 2",
+      "targetHandle": "b"
+    }
+  ],
+  "env": "LynxKite Graph Analytics",
+  "execution_options": {},
+  "nodes": [
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Import hetionet",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2250197.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 47031.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {},
+        "status": "done",
+        "tags": [
+          "slow"
+        ],
+        "telemetry": null,
+        "title": "Import hetionet"
+      },
+      "height": 315.0,
+      "id": "Import hetionet 1",
+      "parentId": null,
+      "position": {
+        "x": 165.0,
+        "y": 263.0
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": false,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": 315.0,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2250197.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 47031.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Hetionet lookup",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 38.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 39.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "name": "multiple sclerosis",
+          "neighbour_kinds": [
+            "Compound"
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Hetionet lookup"
+      },
+      "height": 315.0,
+      "id": "Hetionet lookup 1",
+      "parentId": null,
+      "position": {
+        "x": 1295.6583177407012,
+        "y": 270.3166354814022
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2250197.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 47031.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Knowledge graphs > Hetionet lookup",
+        "output_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 27.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 28.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "params": {
+          "metaedges": [
+            "DlA"
+          ],
+          "name": "brain"
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Hetionet lookup"
+      },
+      "height": 315.0,
+      "id": "Hetionet lookup 2",
+      "parentId": null,
+      "position": {
+        "x": 1252.6761179860955,
+        "y": 1056.6093575182567
+      },
+      "type": "basic",
+      "width": 315.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 2,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 2250197.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 47031.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "edges": true,
+            "nodes": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 581.0,
+      "id": "View tables 1",
+      "parentId": null,
+      "position": {
+        "x": 606.5,
+        "y": -197.0
+      },
+      "type": "table_view",
+      "width": 581.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 3,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 38.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 39.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "edges": true,
+            "nodes": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 555.0,
+      "id": "View tables 2",
+      "parentId": null,
+      "position": {
+        "x": 1802.3334836412923,
+        "y": 150.55725931595265
+      },
+      "type": "table_view",
+      "width": 692.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 4,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 27.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 28.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "View tables",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "_tables_open": {
+            "edges": true,
+            "nodes": true
+          },
+          "limit": 100.0
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "View tables"
+      },
+      "height": 553.0,
+      "id": "View tables 3",
+      "parentId": null,
+      "position": {
+        "x": 1795.3055806068821,
+        "y": 940.4149381251383
+      },
+      "type": "table_view",
+      "width": 670.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 51,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 38.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 39.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "attribute": "name",
+              "disabled": "false",
+              "type": "label"
+            },
+            {
+              "disabled": "false",
+              "symbolSize": "15",
+              "type": "node_size"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "5",
+              "type": "edge_width"
+            },
+            {
+              "attribute": "metaedge",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "edgeColor"
+            },
+            {
+              "attribute": "metaedge",
+              "disabled": "false",
+              "type": "edge_tooltip"
+            },
+            {
+              "attribute": "id",
+              "disabled": "false",
+              "type": "node_tooltip"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 878.0,
+      "id": "Visualize graph 1",
+      "parentId": null,
+      "position": {
+        "x": 2671.802096256863,
+        "y": -47.615680203025356
+      },
+      "type": "graph_visualization",
+      "width": 1266.0
+    },
+    {
+      "data": {
+        "collapsed": null,
+        "display": null,
+        "display_version": 49,
+        "error": null,
+        "expanded_height": null,
+        "input_metadata": [
+          {
+            "dataframes": {
+              "edges": {
+                "columns": [
+                  "metaedge",
+                  "source",
+                  "target"
+                ],
+                "key": "edges",
+                "length": 27.0
+              },
+              "nodes": {
+                "columns": [
+                  "id",
+                  "kind",
+                  "name"
+                ],
+                "key": "nodes",
+                "length": 28.0
+              }
+            },
+            "other": {},
+            "relations": [
+              {
+                "df": "edges",
+                "name": "Hetionet",
+                "source_column": "source",
+                "source_key": "id",
+                "source_table": "nodes",
+                "target_column": "target",
+                "target_key": "id",
+                "target_table": "nodes"
+              }
+            ]
+          }
+        ],
+        "message": null,
+        "meta": null,
+        "op_id": "Visualizations > Visualize graph",
+        "output_metadata": [
+          {}
+        ],
+        "params": {
+          "chip_data": [
+            {
+              "disabled": "false",
+              "symbolSize": "15",
+              "type": "node_size"
+            },
+            {
+              "attribute": "metaedge",
+              "continuous": "false",
+              "disabled": "false",
+              "type": "edgeColor"
+            },
+            {
+              "disabled": "false",
+              "edgeWidth": "5",
+              "type": "edge_width"
+            },
+            {
+              "attribute": "name",
+              "disabled": "false",
+              "type": "label"
+            },
+            {
+              "attribute": "id",
+              "disabled": "false",
+              "type": "node_tooltip"
+            }
+          ]
+        },
+        "status": "done",
+        "tags": [],
+        "telemetry": null,
+        "title": "Visualize graph"
+      },
+      "height": 858.0,
+      "id": "Visualize graph 2",
+      "parentId": null,
+      "position": {
+        "x": 2713.9276771790815,
+        "y": 888.2494810971556
+      },
+      "type": "graph_visualization",
+      "width": 1125.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# Compounds associated with multiple sclerosis"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 130.0,
+      "id": "Comment 1",
+      "parentId": null,
+      "position": {
+        "x": 1403.7845761265162,
+        "y": 89.37853874560915
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# Diseases localized to the brain"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 90.0,
+      "id": "Comment 2",
+      "parentId": null,
+      "position": {
+        "x": 1386.7849201159636,
+        "y": 930.568845203875
+      },
+      "type": "comment",
+      "width": 400.0
+    },
+    {
+      "data": {
+        "__execution_delay": 0.0,
+        "collapsed": null,
+        "display": null,
+        "display_version": null,
+        "error": "Unknown operation.",
+        "expanded_height": null,
+        "input_metadata": null,
+        "message": null,
+        "meta": null,
+        "op_id": "Comment",
+        "output_metadata": null,
+        "params": {
+          "text": "# As we can see, Pregabalin can pallate multiple sclerosis, but it can cause it as a side effect as well"
+        },
+        "status": "done",
+        "tags": null,
+        "telemetry": null,
+        "title": "Comment"
+      },
+      "height": 250.0,
+      "id": "Comment 3",
+      "parentId": null,
+      "position": {
+        "x": 3953.311377664611,
+        "y": -34.52505239335929
+      },
+      "type": "comment",
+      "width": 400.0
+    }
+  ],
+  "paused": true
+}

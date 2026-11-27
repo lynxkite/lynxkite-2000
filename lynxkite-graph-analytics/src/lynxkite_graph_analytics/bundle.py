@@ -3,6 +3,7 @@
 import dataclasses
 import enum
 import numpy as np
+import rdflib
 import typing
 
 import networkx as nx
@@ -65,6 +66,34 @@ class Bundle:
                     df="edges",
                     source_column="source",
                     target_column="target",
+                    source_table="nodes",
+                    target_table="nodes",
+                    source_key="id",
+                    target_key="id",
+                )
+            ],
+        )
+
+    @classmethod
+    def from_rdf(cls, graph: rdflib.Graph):
+        """
+        Creates a bundle from an RDF graph.
+        @param graph: An RDF graph to convert into a bundle.
+        """
+        edges = pd.DataFrame(
+            [(str(s), str(p), str(o)) for s, p, o in graph],
+            columns=["subject", "predicate", "object"],
+        )
+        node_ids = pd.concat([edges["subject"], edges["object"]]).unique()
+        nodes = pd.DataFrame({"id": node_ids})
+        return cls(
+            dfs={"edges": edges, "nodes": nodes},
+            relations=[
+                RelationDefinition(
+                    name="edges",
+                    df="edges",
+                    source_column="subject",
+                    target_column="object",
                     source_table="nodes",
                     target_table="nodes",
                     source_key="id",

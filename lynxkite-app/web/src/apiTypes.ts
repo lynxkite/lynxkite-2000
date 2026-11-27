@@ -33,6 +33,9 @@ export interface Op {
   icon?: string | null;
   doc?: unknown[] | null;
   id?: string;
+  python_function_name?: string;
+  placeholder_function_name?: boolean;
+  tags?: string[] | null;
 }
 /**
  * Defines a parameter for an operation.
@@ -78,7 +81,7 @@ export interface Workspace {
   nodes?: WorkspaceNode[];
   edges?: WorkspaceEdge[];
   paused?: boolean | null;
-  assistant_messages?: any[] | null;
+  assistant_messages?: WorkspaceAssistantMessage[] | null;
   path?: string | null;
   [k: string]: unknown;
 }
@@ -89,6 +92,7 @@ export interface WorkspaceNode {
   position: Position1;
   width?: number | null;
   height?: number | null;
+  parentId?: string | null;
   [k: string]: unknown;
 }
 export interface WorkspaceNodeData {
@@ -114,21 +118,11 @@ export interface WorkspaceNodeData {
   collapsed?: boolean | null;
   expanded_height?: number | null;
   status?: NodeStatus;
-  telemetry?: Telemetry | null;
-  chips?:
-    | {
-        [k: string]: string;
-      }[]
-    | null;
+  telemetry?: {
+    [k: string]: unknown;
+  } | null;
   meta?: Op | null;
-  [k: string]: unknown;
-}
-export interface Telemetry {
-  bars?: {
-    [row: string]: {
-      [k: string]: unknown;
-    };
-  };
+  tags?: string[] | null;
   [k: string]: unknown;
 }
 export interface Position1 {
@@ -142,5 +136,10 @@ export interface WorkspaceEdge {
   target: string;
   sourceHandle: string;
   targetHandle: string;
+  [k: string]: unknown;
+}
+export interface WorkspaceAssistantMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
   [k: string]: unknown;
 }

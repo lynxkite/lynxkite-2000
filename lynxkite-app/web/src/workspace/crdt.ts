@@ -14,7 +14,12 @@ import {
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { WebsocketProvider } from "y-websocket";
 import * as Y from "yjs";
-import type { WorkspaceEdge, WorkspaceNode, Workspace as WorkspaceType } from "../apiTypes.ts";
+import type {
+  WorkspaceAssistantMessage,
+  WorkspaceEdge,
+  WorkspaceNode,
+  Workspace as WorkspaceType,
+} from "../apiTypes.ts";
 import { getWebSocketParams } from "../common.ts";
 
 // How often (in ms) to broadcast a node's position to collaborators while it is being dragged.
@@ -56,7 +61,7 @@ export type CRDTWorkspace = {
   setPausedState: (paused: boolean) => void;
   setEnv: (env: string) => void;
   setExecutionOptions: (options: Record<string, any>) => void;
-  setAssistantMessages: (messages: any[]) => void;
+  setAssistantMessages: (messages: WorkspaceAssistantMessage[]) => void;
   clearAssistantMessages: () => void;
   applyChange: (fn: (conn: CRDTConnection) => void) => void;
   addNode: (node: Partial<WorkspaceNode>) => void;
@@ -183,7 +188,8 @@ class CRDTConnection {
       setEnv: (env: string) => this.setWsKey("env", env),
       setExecutionOptions: (options: Record<string, any>) =>
         this.setWsKey("execution_options", options),
-      setAssistantMessages: (messages: any[]) => this.setWsKey("assistant_messages", messages),
+      setAssistantMessages: (messages: WorkspaceAssistantMessage[]) =>
+        this.setWsKey("assistant_messages", messages),
       clearAssistantMessages: () => this.setWsKey("assistant_messages", []),
       addNode: (node: Partial<WorkspaceNode>) => {
         if (!this.canWrite) return;

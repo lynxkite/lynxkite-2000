@@ -3,7 +3,7 @@
 
 import { type Edge, type Node, type ReactFlowInstance, useReactFlow } from "@xyflow/react";
 import type { InternalNodeBase } from "@xyflow/system";
-import { type MouseEvent, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { WorkspaceEdge } from "../apiTypes.ts";
 
 const MIN_AUTO_CONNECT_DISTANCE = 100;

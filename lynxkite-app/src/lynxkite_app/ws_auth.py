@@ -30,11 +30,12 @@ def authenticate_websocket(scope: dict[str, Any], room_path: str) -> bool:
 
     token = _token_from_scope(scope)
     if token is None:
-        return True
-    try:
-        user = get_provider().verify(token)
-    except JWTError:
-        return True
+        user: acl.User = {}
+    else:
+        try:
+            user = get_provider().verify(token)
+        except JWTError:
+            return True
 
     if not acl.has_permission(user, "read", room_path):
         return True
@@ -92,6 +93,45 @@ class WriteFilteringChannel:
                 return message
 
 
+def user_label(scope: dict[str, Any]) -> str | None:
+    """Display name of the user on an accepted connection. None when auth is off."""
+    if not is_auth_enabled():
+        return None
+    user: acl.User = scope.get("lynxkite_user") or {}
+    for claim in ("name", "preferred_username", "email", "sub"):
+        value = user.get(claim)
+        if isinstance(value, str) and value:
+            return value
+    return "Guest"
+
+
+async def accept(scope: dict[str, Any], receive, send, room_path: str) -> bool:
+    """Complete the WebSocket handshake after ACL checks. Return False if rejected."""
+    message = await receive()
+    if message["type"] != "websocket.connect":
+        return False
+    if authenticate_websocket(scope, room_path):
+        await send({"type": "websocket.close", "code": 4403})
+        return False
+    await send({"type": "websocket.accept"})
+    return True
+
+
+async def serve_accepted(
+    websocket_server: WebsocketServer,
+    scope: dict[str, Any],
+    receive,
+    send,
+    room_path: str,
+) -> None:
+    """Serve a WebSocket that went through `accept`; filter writes when read-only."""
+    channel = WriteFilteringChannel(
+        ASGIWebsocket(receive, send, room_path),
+        can_write=scope.get("lynxkite_write", True),
+    )
+    await websocket_server.serve(channel)
+
+
 async def serve(
     websocket_server: WebsocketServer,
     scope: dict[str, Any],
@@ -100,15 +140,5 @@ async def serve(
     room_path: str,
 ) -> None:
     """Accept a WebSocket after ACL checks; filter writes when read-only."""
-    message = await receive()
-    if message["type"] != "websocket.connect":
-        return
-    if authenticate_websocket(scope, room_path):
-        await send({"type": "websocket.close", "code": 4403})
-        return
-    await send({"type": "websocket.accept"})
-    channel = WriteFilteringChannel(
-        ASGIWebsocket(receive, send, room_path),
-        can_write=scope.get("lynxkite_write", True),
-    )
-    await websocket_server.serve(channel)
+    if await accept(scope, receive, send, room_path):
+        await serve_accepted(websocket_server, scope, receive, send, room_path)

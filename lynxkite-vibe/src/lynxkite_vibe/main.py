@@ -174,7 +174,7 @@ def sync_workspace(project):
     )
     converter.start()
     project_encoded = urllib.parse.quote(project)
-    url = f"http://localhost:5173/edit/LynxKite%20Vibe/{project_encoded}/workspace.lynxkite.json"
+    url = f"http://localhost:5173/edit/LynxKite%20Vibe/{project_encoded}/workspace.lynxkite"
     return f"LynxKite workspace:\n## ➡️ [LynxKite Vibe/{project}]({url})"
 
 

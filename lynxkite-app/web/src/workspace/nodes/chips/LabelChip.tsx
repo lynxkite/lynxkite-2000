@@ -26,10 +26,12 @@ export class LabelChip extends SingleAttributeChip {
 
     context.series?.data?.forEach((node: any) => {
       const value = node.attributes?.[this.attribute];
+      const text =
+        value === "" || Number.isNaN(Number(value)) ? value : String(+Number(value).toFixed(2));
       node.label = {
         ...node.label,
         show: true,
-        formatter: String(Math.round(Number(value) * 100) / 100),
+        formatter: text,
         position: "top",
       };
     });

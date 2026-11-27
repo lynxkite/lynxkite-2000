@@ -6,9 +6,9 @@ import asyncio
 import enum
 import functools
 import hashlib
-import json
 import importlib.util
 import inspect
+import json
 import os
 import pathlib
 import pkgutil
@@ -19,10 +19,13 @@ import traceback
 import types
 import typing
 from dataclasses import dataclass
+
 import pydantic
 from pydantic_core import to_json
+
 from .matplotlib_to_image import matplotlib_to_image
-from .opcontext import OpContext, CONTEXT_PARAM_NAME, find_ctx_param_name
+from .opcontext import CONTEXT_PARAM_NAME, OpContext, find_ctx_param_name
+from .workspace_paths import display_path
 
 if typing.TYPE_CHECKING:
     from . import workspace
@@ -203,12 +206,6 @@ class Output(BaseConfig):
     position: Position
 
 
-def build_output_path(ws_path: str, node_id: str) -> pathlib.Path:
-    """Builds the path to save the display data for a given node output."""
-    ws_path_obj = pathlib.Path(ws_path)
-    return pathlib.Path(f"{ws_path_obj.parent}/.workspace_files/{ws_path_obj.name}/{node_id}.json")
-
-
 @dataclass
 class Result:
     """Represents the result of an operation.
@@ -227,16 +224,16 @@ class Result:
     input_metadata: list[dict[str, ReadOnlyJSON]] | None = None
     output_metadata: list[dict[str, ReadOnlyJSON]] | None = None
 
-    def save_display(self, ws_path: str | None, node_id: str, version: int):
+    def save_display(self, display_path: os.PathLike[str], version: int):
         """Saves the display data to a file. The path is relative to the workspace's data directory."""
         # If old version had display and new run has None,
         # frontend keeps previous cached display keyed by unchanged version.
         # TODO: check if this is an actual problem.
         #   (e.g. the boxes that use display always return something)
-        if ws_path and self.display is not None:
-            path = build_output_path(ws_path, node_id)
-            path.parent.mkdir(exist_ok=True, parents=True)
-            display_json = to_json(self.display)
+        path = pathlib.Path(display_path)
+        if self.display is not None:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            display_json = to_json(self.display) + b"\n"
             try:
                 with open(path, "r+b") as f:
                     old_display = f.read()
@@ -323,11 +320,9 @@ class Op(BaseConfig):
         params = self.convert_params(params)
         ctx_name, ctx_idx = find_ctx_param_name(self.func)
         if ctx_name is not None and ctx_idx is not None:
-            inputs_list = list(inputs)
-            inputs_list.insert(ctx_idx, op_ctx)
-            res = self.func(*inputs_list, **params)
-        else:
-            res = self.func(*inputs, **params)
+            inputs = list(inputs)
+            inputs.insert(ctx_idx, op_ctx)
+        res = self.func(*inputs, **params)
 
         is_visualization_type = self.type in [
             "visualization",
@@ -344,15 +339,20 @@ class Op(BaseConfig):
                 res = Result(display=res)
             else:
                 res = Result(output=res)
-
-        # Save display if needed
-        if is_visualization_type and not self.type == "graph_creation_view":
-            if op_ctx.ws and op_ctx.node:
-                res.save_display(
-                    op_ctx.ws.path, op_ctx.node.id, (op_ctx.node.data.display_version or 0)
-                )
-
         return res
+
+    def save_display(self, result: Result, op_ctx: OpContext):
+        """Saves resolved visualization data. The executor must call this after awaiting the result."""
+        if (
+            self.type in ["visualization", "graph_visualization", "table_view", "image", "molecule"]
+            and op_ctx.ws
+            and op_ctx.node
+            and op_ctx.ws.path
+        ):
+            result.save_display(
+                display_path(op_ctx.ws.path, op_ctx.node.id),
+                (op_ctx.node.data.display_version or 0),
+            )
 
     def get_input(self, name: str):
         """Returns the input with the given name."""

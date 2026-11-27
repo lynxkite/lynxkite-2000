@@ -16,7 +16,8 @@ import fastapi
 import pycrdt.store.file
 import pycrdt.websocket
 import uvicorn.protocols.utils
-from lynxkite_core import ops, workspace
+from lynxkite_core import ops, workspace, workspace_paths
+from lynxkite_core.workspace_paths import workspace_file_path
 from watchdog import events, observers
 from websockets.exceptions import ConnectionClosedOK
 
@@ -178,7 +179,7 @@ class WorkspaceWebsocketServer(InitializingWebsocketServer[WorkspaceRoom]):
             ws["env"] = next(iter(ops.CATALOGS), "unset")
             # We have two possible sources of truth for the workspaces, the YStore and the JSON files.
             # In case we didn't find the workspace in the YStore, we try to load it from the JSON files.
-            if not os.path.exists(name):
+            if not workspace_file_path(name).exists():
                 workspace.Workspace().save(name)
             else:
                 load_workspace(ws, name)
@@ -220,9 +221,10 @@ class WorkspaceWebsocketServer(InitializingWebsocketServer[WorkspaceRoom]):
 
 
 class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
-    def __init__(self, ws_crdt: pycrdt.Map, file_path: str, loop: asyncio.AbstractEventLoop):
-        self.file_path = file_path
-        self.dir_path = os.path.dirname(file_path) or "."
+    def __init__(self, ws_crdt: pycrdt.Map, workspace_name: str, loop: asyncio.AbstractEventLoop):
+        self.workspace_name = workspace_name
+        self.file_path = str(workspace_file_path(workspace_name))
+        self.dir_path = os.path.dirname(self.file_path) or "."
         self.ws_crdt = ws_crdt
         self.loop = loop
         self.started = False
@@ -246,12 +248,12 @@ class WorkspaceFileChangeHandler(events.FileSystemEventHandler):
     def on_modified(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected changes in {event.src_path}. Updating workspace...")
-            self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.file_path)
+            self.loop.call_soon_threadsafe(load_workspace, self.ws_crdt, self.workspace_name)
 
     def on_deleted(self, event):
         if pathlib.Path(event.src_path) == pathlib.Path(self.file_path):
             print(f"Detected deletion of {event.src_path}. Deleting workspace room...")
-            self.loop.call_soon_threadsafe(delete_room, self.file_path)
+            self.loop.call_soon_threadsafe(delete_room, self.workspace_name)
 
 
 class CodeWebsocketServer(InitializingWebsocketServer[pycrdt.websocket.YRoom]):
@@ -337,7 +339,7 @@ def load_workspace(ws: pycrdt.Map, name: str):
     """
     runtime_state = state.get(name)
     if runtime_state:
-        with open(name, encoding="utf-8") as f:
+        with workspace_file_path(name).open(encoding="utf-8") as f:
             file_contents = f.read()
         if runtime_state.last_frontend_save == file_contents:
             runtime_state.last_frontend_save = None
@@ -551,16 +553,22 @@ async def crdt_websocket(websocket: fastapi.WebSocket, room_name: str):
     global app
     app = websocket.scope["app"]
     room_name = sanitize_path(room_name)
-    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server)
+    if not workspace_paths.is_workspace_bundle(room_name):
+        await websocket.close(code=1008)
+        return
+    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
+    if not await ws_auth.accept(scope, websocket._receive, websocket._send, room_name):
+        return
+    user = ws_auth.user_label(scope)
+    progress_crdt.on_workspace_connection_open(room_name, ws_websocket_server, user)
     if enterprise_backend is not None:
         enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
-    scope = {**websocket.scope, "path": room_name, "type": "websocket"}
     try:
-        await ws_auth.serve(
+        await ws_auth.serve_accepted(
             ws_websocket_server, scope, websocket._receive, websocket._send, room_name
         )
     finally:
-        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server)
+        progress_crdt.on_workspace_connection_close(room_name, ws_websocket_server, user)
         if enterprise_backend is not None:
             enterprise_backend.refresh_progress(ws_websocket_server, progress_crdt)
 

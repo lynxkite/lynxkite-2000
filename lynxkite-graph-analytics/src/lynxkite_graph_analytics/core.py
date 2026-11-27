@@ -3,6 +3,7 @@
 import inspect
 import os
 import pathlib
+import rdflib
 import time
 from lynxkite_core import ops, workspace
 from lynxkite_core.executors.one_by_one import mount_gradio
@@ -276,6 +277,8 @@ async def await_if_needed(obj):
 def _to_bundle(x):
     if isinstance(x, nx.Graph):
         x = Bundle.from_nx(x)
+    elif isinstance(x, rdflib.Graph):
+        x = Bundle.from_rdf(x)
     elif isinstance(x, pd.DataFrame):
         x = Bundle.from_df(x)
     assert isinstance(x, Bundle), f"Input must be a graph or dataframe. Got: {x}"
@@ -293,7 +296,7 @@ async def _execute_node(
     params = {**node.data.params}
     op = catalog.get(node.data.op_id)
     if not op:
-        node.publish_error("Unknown operation.")
+        node.publish_error(f"Unknown operation: {node.data.op_id}")
         return
     node.publish_started()
     input_map = {}
@@ -357,6 +360,7 @@ async def _execute_node(
         result.display = await await_if_needed(result.display)
         if dataclasses.is_dataclass(result.display):
             result.display = dataclasses.asdict(result.display)
+        op.save_display(result, op_ctx)
     except Exception as e:
         if not os.environ.get("LYNXKITE_SUPPRESS_OP_ERRORS"):
             traceback.print_exc()
@@ -473,7 +477,7 @@ async def api_service_get(request):
       def chat_backend(input: Bundle):
           return ChatBackend()
 
-      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite.json/Chat%20backend%201/models
+      curl ${LYNXKITE_URL}/api/service/lynxkite_graph_analytics/Example.lynxkite/Chat%20backend%201/models
     """
     service = await get_node_service(request)
     return await service.get(request)

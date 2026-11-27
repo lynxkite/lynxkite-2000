@@ -9,6 +9,7 @@ import shutil
 from typing import Any
 from deepagents.backends import protocol, state
 from lynxkite_core import ops, workspace
+from lynxkite_core.workspace_paths import workspace_data_dir
 from . import python_workspace_conversion
 from . import sync_workspaces
 from . import instructions
@@ -111,9 +112,7 @@ async def set_workspace_file_content(
     sync_workspaces.update_ws_positions(source=old_ws, target=ws)
     if not ws.paused:
         if memory_dir:
-            ws_files_path = (
-                Path(ws_path).parent / ".workspace_files" / Path(ws_path).name
-            )
+            ws_files_path = workspace_data_dir(ws_path)
             if os.path.exists(ws_files_path) and not os.path.exists(
                 memory_dir / "workspace_files"
             ):

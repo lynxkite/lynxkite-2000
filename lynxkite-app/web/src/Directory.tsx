@@ -1,7 +1,8 @@
-import { type ReactElement, useRef, useState } from "react";
+import { useRef, useState } from "react";
 // The directory browser.
 import { Link, useNavigate } from "react-router";
 import useSWR from "swr";
+import AlertCircle from "~icons/tabler/alert-circle";
 import DotsVertical from "~icons/tabler/dots-vertical";
 import File from "~icons/tabler/file";
 import FilePlus from "~icons/tabler/file-plus";
@@ -10,42 +11,80 @@ import FolderPlus from "~icons/tabler/folder-plus";
 import Home from "~icons/tabler/home";
 import LayoutGrid from "~icons/tabler/layout-grid";
 import LayoutGridAdd from "~icons/tabler/layout-grid-add";
+import Lock from "~icons/tabler/lock";
+import Settings from "~icons/tabler/settings";
+import Star from "~icons/tabler/star";
+import StarFilled from "~icons/tabler/star-filled";
 import Upload from "~icons/tabler/upload";
 import type { DirectoryEntry } from "./apiTypes.ts";
-import { apiFetch, apiJson, getConfig, useFolderPermissions, usePath } from "./common.ts";
+import {
+  apiFetch,
+  apiJson,
+  getConfig,
+  triggerLogin,
+  uploadFile,
+  useAuth,
+  useFolderPermissions,
+  usePath,
+} from "./common.ts";
+import DownloadProgressToast, {
+  type DownloadAction,
+  type DownloadProgress,
+  type PendingDownload,
+} from "./DownloadProgressToast.tsx";
+import { FolderSettingsModal, type FolderSettingsModalHandle } from "./FolderSettingsModal.tsx";
 import ManagementPage from "./ManagementPage.tsx";
 import { Modal, type ModalHandle } from "./Modal.tsx";
-
-function EntryCreator(props: {
-  label: string;
-  icon: ReactElement;
-  onCreate: (name: string) => void;
-}) {
-  const modalRef = useRef<ModalHandle>(null);
-
-  return (
-    <>
-      <button type="button" onClick={() => modalRef.current?.open()}>
-        {props.icon} {props.label}
-      </button>
-      <Modal
-        ref={modalRef}
-        title={props.label}
-        inputLabel="Name"
-        submitLabel="Create"
-        onSubmit={props.onCreate}
-      />
-    </>
-  );
-}
+import { WorkspaceProgressList } from "./ProgressSidebar.tsx";
+import {
+  entryLink,
+  removeEntry,
+  renameEntry,
+  shortName,
+  toggleFavorite,
+  useFavorites,
+} from "./sidebarStore.ts";
+import UploadProgressToast, { type UploadProgress } from "./UploadProgressToast.tsx";
 
 const fetcher = (url: string) => apiJson<DirectoryEntry[]>(url);
 
-type DownloadAction = "download" | "export";
+type UploadItem = { file: File; path: string };
+
+async function collectDroppedEntry(
+  entry: FileSystemEntry,
+  parent: string,
+  files: UploadItem[],
+  directories: string[],
+): Promise<void> {
+  const path = parent ? `${parent}/${entry.name}` : entry.name;
+  if (entry.isFile) {
+    const file = await new Promise<File>((resolve, reject) =>
+      (entry as FileSystemFileEntry).file(resolve, reject),
+    );
+    files.push({ file, path });
+  } else if (entry.isDirectory) {
+    directories.push(path);
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    while (true) {
+      const children = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+        reader.readEntries(resolve, reject),
+      );
+      if (!children.length) break;
+      for (const child of children) {
+        await collectDroppedEntry(child, path, files, directories);
+      }
+    }
+  }
+}
 
 function Breadcrumbs(props: { path: string }) {
   if (!props.path) {
-    return <title>LynxKite 2000:MM</title>;
+    return (
+      <div className="breadcrumbs">
+        <span className="current-folder">Files</span>
+        <title>LynxKite 2000:MM</title>
+      </div>
+    );
   }
 
   return (
@@ -76,6 +115,54 @@ function Breadcrumbs(props: { path: string }) {
   );
 }
 
+function DirectoryError({
+  error,
+  path,
+  permissions,
+}: {
+  error: Error;
+  path: string;
+  permissions: { read: boolean; isLoading: boolean; error?: unknown };
+}) {
+  const user = useAuth();
+  const loggedIn = !!user && !user.expired;
+  if (permissions.isLoading) return null;
+  if (permissions.read || permissions.error) {
+    return (
+      <div className="directory-error">
+        <AlertCircle style={{ verticalAlign: "baseline" }} />
+        <div>
+          <h1>Error</h1>
+          {error.message}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="directory-error">
+      <Lock style={{ verticalAlign: "baseline" }} />
+      <div>
+        <h1>No access</h1>
+        {loggedIn ? (
+          <p>You don't have access to this folder. Ask an administrator to give you access.</p>
+        ) : (
+          <p>Sign in to see the files here.</p>
+        )}
+        {path && (
+          <p>
+            <Link to="/">Go to the main folder</Link>
+          </p>
+        )}
+      </div>
+      {!loggedIn && (
+        <button type="button" className="btn btn-primary" onClick={() => triggerLogin()}>
+          Sign in
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function Directory() {
   const path = usePath().replace(/^[/]$|^[/]dir$|^[/]dir[/]/, "");
   const encodedPath = encodeURIComponent(path || "");
@@ -87,40 +174,29 @@ export default function Directory() {
   });
   const navigate = useNavigate();
   const renameModalRef = useRef<ModalHandle>(null);
+  const folderSettingsModalRef = useRef<FolderSettingsModalHandle>(null);
   const [renameTarget, setRenameTarget] = useState<DirectoryEntry | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [pendingDownload, setPendingDownload] = useState<{
-    action: DownloadAction;
-    itemName: string;
-  } | null>(null);
-
-  function link(item: DirectoryEntry) {
-    const encodedName = encodePathSegments(item.name);
-    if (item.type === "directory") {
-      return `/dir/${encodedName}`;
-    }
-    if (item.type === "workspace") {
-      return `/edit/${encodedName}`;
-    }
-    return `/code/${encodedName}`;
-  }
-
-  function shortName(item: DirectoryEntry) {
-    return item.name
-      .split("/")
-      .pop()
-      ?.replace(/[.]lynxkite[.]json$/, "");
-  }
+  const newWorkspaceModalRef = useRef<ModalHandle>(null);
+  const newCodeFileModalRef = useRef<ModalHandle>(null);
+  const newFolderModalRef = useRef<ModalHandle>(null);
+  const favorites = useFavorites();
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
+  const [pendingDownload, setPendingDownload] = useState<PendingDownload | null>(null);
 
   function encodePathSegments(path: string): string {
     const segments = path.split("/");
     return segments.map((segment) => encodeURIComponent(segment)).join("/");
   }
 
+  function boxDirectoryPath(item: DirectoryEntry): string {
+    return `${item.name}/node_data`;
+  }
+
   function newWorkspaceIn(path: string, workspaceName: string) {
     const pathSlash = path ? `${encodePathSegments(path)}/` : "";
-    navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite.json`, {
+    navigate(`/edit/${pathSlash}${encodeURIComponent(workspaceName)}.lynxkite`, {
       replace: true,
     });
   }
@@ -130,21 +206,79 @@ export default function Directory() {
       replace: true,
     });
   }
-  async function uploadFiles(files: FileList | File[]) {
+  async function uploadFiles(files: UploadItem[], directories: string[] = []) {
     const dirParam = encodeURIComponent(path || "");
-    for (const file of Array.from(files)) {
+    if (directories.length) {
       const formData = new FormData();
-      formData.append("file", file);
+      for (const directory of directories) formData.append("directory", directory);
       const res = await apiFetch(`/api/upload?dir=${dirParam}`, {
         method: "POST",
         body: formData,
       });
       if (!res.ok) {
+        alert("Failed to upload folders.");
+        return;
+      }
+    }
+    const totalBytes = files.reduce((total, item) => total + item.file.size, 0);
+    const totalFiles = files.length;
+    if (totalFiles) {
+      setUploadProgress({ uploadedBytes: 0, totalBytes, completedFiles: 0, totalFiles });
+    }
+    let completedBytes = 0;
+    let completedFiles = 0;
+    for (const { file, path: relativePath } of files) {
+      try {
+        await uploadFile(file, {
+          directory: path || "",
+          path: relativePath,
+          onProgress: (uploadedBytes) => {
+            setUploadProgress({
+              uploadedBytes: completedBytes + uploadedBytes,
+              totalBytes,
+              completedFiles,
+              totalFiles,
+            });
+          },
+        });
+        completedBytes += file.size;
+        completedFiles += 1;
+        setUploadProgress({
+          uploadedBytes: completedBytes,
+          totalBytes,
+          completedFiles,
+          totalFiles,
+        });
+      } catch {
+        setUploadProgress(null);
+        list.mutate();
         alert(`Failed to upload ${file.name}.`);
         return;
       }
     }
+    setUploadProgress(null);
     list.mutate();
+  }
+
+  async function uploadDroppedItems(dataTransfer: DataTransfer) {
+    const entries = Array.from(dataTransfer.items)
+      .filter((item) => item.kind === "file")
+      .map((item) => item.webkitGetAsEntry?.())
+      .filter((entry): entry is FileSystemEntry => entry !== null && entry !== undefined);
+    if (!entries.length) {
+      await uploadFiles(Array.from(dataTransfer.files, (file) => ({ file, path: file.name })));
+      return;
+    }
+    const files: UploadItem[] = [];
+    const directories: string[] = [];
+    try {
+      for (const entry of entries) {
+        await collectDroppedEntry(entry, "", files, directories);
+      }
+      await uploadFiles(files, directories);
+    } catch {
+      alert("Failed to read dropped files or folders.");
+    }
   }
 
   async function newFolderIn(path: string, folderName: string) {
@@ -165,11 +299,12 @@ export default function Directory() {
     if (confirmationEnabled && !window.confirm(`Are you sure you want to delete "${item.name}"?`))
       return;
     const apiPath = item.type === "directory" ? "/api/dir/delete" : "/api/delete";
-    await apiFetch(apiPath, {
+    const res = await apiFetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: item.name }),
     });
+    if (res.ok) removeEntry(item.name);
     list.mutate();
   }
 
@@ -183,7 +318,7 @@ export default function Directory() {
     const oldParts = renameTarget.name.split("/");
     oldParts.pop();
     const parentPath = oldParts.join("/");
-    const targetName = renameTarget.type === "workspace" ? `${newName}.lynxkite.json` : newName;
+    const targetName = renameTarget.type === "workspace" ? `${newName}.lynxkite` : newName;
     const newPath = parentPath ? `${parentPath}/${targetName}` : targetName;
     if (newPath === renameTarget.name) {
       setRenameTarget(null);
@@ -198,11 +333,17 @@ export default function Directory() {
       alert("Failed to rename item.");
       return;
     }
+    renameEntry(renameTarget.name, newPath);
     setRenameTarget(null);
     list.mutate();
   }
 
-  async function downloadBlob(apiPath: string, item: DirectoryEntry, fileName: string) {
+  async function downloadBlob(
+    apiPath: string,
+    item: DirectoryEntry,
+    fileName: string,
+    onProgress: (progress: DownloadProgress) => void,
+  ) {
     const res = await apiFetch(apiPath, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -212,7 +353,31 @@ export default function Directory() {
       alert("Failed to download file.");
       return false;
     }
-    const blob = await res.blob();
+    const headerLength = Number(res.headers.get("Content-Length"));
+    const totalBytes = Number.isFinite(headerLength) && headerLength > 0 ? headerLength : null;
+    onProgress({ phase: "downloading", receivedBytes: 0, totalBytes });
+    let blob: Blob;
+    if (res.body) {
+      const reader = res.body.getReader();
+      const chunks: Uint8Array<ArrayBuffer>[] = [];
+      let receivedBytes = 0;
+      let lastProgressUpdate = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value as Uint8Array<ArrayBuffer>);
+        receivedBytes += value.byteLength;
+        if (performance.now() - lastProgressUpdate >= 100) {
+          onProgress({ phase: "downloading", receivedBytes, totalBytes });
+          lastProgressUpdate = performance.now();
+        }
+      }
+      onProgress({ phase: "downloading", receivedBytes, totalBytes });
+      blob = new Blob(chunks, { type: res.headers.get("Content-Type") ?? "" });
+    } else {
+      blob = await res.blob();
+      onProgress({ phase: "downloading", receivedBytes: blob.size, totalBytes });
+    }
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -238,9 +403,17 @@ export default function Directory() {
     trigger: HTMLElement,
   ) {
     if (pendingDownload !== null) return;
-    setPendingDownload({ action, itemName: item.name });
+    setPendingDownload({
+      action,
+      itemName: item.name,
+      phase: "preparing",
+      receivedBytes: 0,
+      totalBytes: null,
+    });
     try {
-      const started = await downloadBlob(apiPath, item, fileName);
+      const started = await downloadBlob(apiPath, item, fileName, (progress) => {
+        setPendingDownload({ action, itemName: item.name, ...progress });
+      });
       if (started) {
         closeDropdown(trigger);
       }
@@ -249,9 +422,18 @@ export default function Directory() {
     }
   }
 
+  const sidebarBottom = config.enterprise_available ? <WorkspaceProgressList /> : null;
+
+  if (list.error) {
+    return (
+      <ManagementPage sidebarBottom={sidebarBottom}>
+        <DirectoryError error={list.error} path={path} permissions={permissions} />
+      </ManagementPage>
+    );
+  }
+
   return (
-    <ManagementPage>
-      {list.error && <p className="error">{list.error.message}</p>}
+    <ManagementPage sidebarBottom={sidebarBottom}>
       {list.isLoading && (
         <output className="loading spinner-border">
           <span className="visually-hidden">Loading...</span>
@@ -262,56 +444,39 @@ export default function Directory() {
         <>
           {canWrite && (
             <div className="actions">
-              <EntryCreator
-                onCreate={(name) => {
-                  newWorkspaceIn(path || "", name);
-                }}
-                icon={<LayoutGridAdd />}
-                label="New workspace"
-              />
-              {config.enterprise_available && (
-                <Link to="/progress">
-                  <LayoutGrid /> Enterprise progress
-                </Link>
-              )}
-              <EntryCreator
-                onCreate={(name) => {
-                  newCodeFile(path || "", name);
-                }}
-                icon={<FilePlus />}
-                label="New code file"
-              />
-              <EntryCreator
-                onCreate={(name: string) => {
-                  newFolderIn(path || "", name);
-                }}
-                icon={<FolderPlus />}
-                label="New folder"
-              />
               <input
                 type="file"
                 ref={fileInputRef}
                 style={{ display: "none" }}
                 multiple
                 onChange={(e) => {
-                  if (e.target.files?.length) uploadFiles(e.target.files);
+                  if (e.target.files?.length)
+                    uploadFiles(Array.from(e.target.files, (file) => ({ file, path: file.name })));
                   e.target.value = "";
                 }}
               />
+              <button type="button" onClick={() => newWorkspaceModalRef.current?.open()}>
+                <LayoutGridAdd /> New workspace
+              </button>
+              <button type="button" onClick={() => newCodeFileModalRef.current?.open()}>
+                <FilePlus /> New code file
+              </button>
+              <button type="button" onClick={() => newFolderModalRef.current?.open()}>
+                <FolderPlus /> New folder
+              </button>
               <button type="button" onClick={() => fileInputRef.current?.click()}>
                 <Upload /> Upload file
               </button>
+              <button
+                type="button"
+                onClick={() => folderSettingsModalRef.current?.open(path || "")}
+              >
+                <Settings /> Folder settings
+              </button>
             </div>
           )}
-          {!canWrite && !permissions.isLoading && config.authentication_issuer && (
+          {!canWrite && !permissions.isLoading && (
             <p className="text-sm opacity-70 px-2">This folder is read-only.</p>
-          )}
-          {!canWrite && config.enterprise_available && (
-            <div className="actions">
-              <Link to="/progress">
-                <LayoutGrid /> Enterprise progress
-              </Link>
-            </div>
           )}
 
           <Breadcrumbs path={path} />
@@ -340,7 +505,8 @@ export default function Directory() {
                 ? (e) => {
                     e.preventDefault();
                     setIsDragOver(false);
-                    if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
+                    if (e.dataTransfer.items.length || e.dataTransfer.files.length)
+                      uploadDroppedItems(e.dataTransfer);
                   }
                 : undefined
             }
@@ -349,7 +515,7 @@ export default function Directory() {
               (item: DirectoryEntry) =>
                 !shortName(item)?.startsWith("__") && (
                   <div key={item.name} className="entry">
-                    <Link key={link(item)} to={link(item)}>
+                    <Link key={entryLink(item)} to={entryLink(item)}>
                       {item.type === "directory" ? (
                         <Folder />
                       ) : item.type === "workspace" ? (
@@ -359,6 +525,14 @@ export default function Directory() {
                       )}
                       <span className="entry-name">{shortName(item)}</span>
                     </Link>
+                    <button
+                      type="button"
+                      className={`entry-favorite-button${favorites.some((f) => f.name === item.name) ? " active" : ""}`}
+                      aria-label={`Toggle favorite for ${shortName(item)}`}
+                      onClick={() => toggleFavorite(item)}
+                    >
+                      {favorites.some((f) => f.name === item.name) ? <StarFilled /> : <Star />}
+                    </button>
                     <div className="dropdown dropdown-left dropdown-end">
                       <button
                         className="entry-actions-button"
@@ -369,6 +543,13 @@ export default function Directory() {
                         <DotsVertical />
                       </button>
                       <ul tabIndex={0} className="dropdown-content menu">
+                        {item.type === "workspace" && (
+                          <li>
+                            <Link to={`/dir/${encodePathSegments(boxDirectoryPath(item))}`}>
+                              View box files
+                            </Link>
+                          </li>
+                        )}
                         {canWrite && (
                           <>
                             <li>
@@ -394,28 +575,29 @@ export default function Directory() {
                             </li>
                           </>
                         )}
-                        {item.type !== "directory" && (
-                          <li>
-                            <button
-                              type="button"
-                              aria-disabled={pendingDownload !== null}
-                              onClick={async (e) => {
-                                await runDownloadAction(
-                                  "download",
-                                  "/api/download",
-                                  item,
-                                  item.name.split("/").pop()!,
-                                  e.currentTarget,
-                                );
-                              }}
-                            >
-                              {pendingDownload?.action === "download" &&
-                              pendingDownload.itemName === item.name
-                                ? "Downloading..."
-                                : "Download"}
-                            </button>
-                          </li>
-                        )}
+                        <li>
+                          <button
+                            type="button"
+                            aria-disabled={pendingDownload !== null}
+                            onClick={async (e) => {
+                              const fileName = item.name.split("/").pop()!;
+                              await runDownloadAction(
+                                "download",
+                                "/api/download",
+                                item,
+                                item.type === "workspace" ? `${fileName}.zip` : fileName,
+                                e.currentTarget,
+                              );
+                            }}
+                          >
+                            {pendingDownload?.action === "download" &&
+                            pendingDownload.itemName === item.name
+                              ? pendingDownload.phase === "preparing"
+                                ? "Preparing..."
+                                : "Downloading..."
+                              : "Download"}
+                          </button>
+                        </li>
                         {item.type === "workspace" && (
                           <li>
                             <button
@@ -434,7 +616,9 @@ export default function Directory() {
                             >
                               {pendingDownload?.action === "export" &&
                               pendingDownload.itemName === item.name
-                                ? "Exporting..."
+                                ? pendingDownload.phase === "preparing"
+                                  ? "Preparing..."
+                                  : "Exporting..."
                                 : "Export static page"}
                             </button>
                           </li>
@@ -449,15 +633,41 @@ export default function Directory() {
         </>
       )}
       {canWrite && (
-        <Modal
-          ref={renameModalRef}
-          title="Rename item"
-          description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
-          inputLabel="New name"
-          submitLabel="Rename"
-          onSubmit={submitRename}
-        />
+        <>
+          <Modal
+            ref={renameModalRef}
+            title="Rename item"
+            description={renameTarget ? `Current name: ${shortName(renameTarget)}` : ""}
+            inputLabel="New name"
+            submitLabel="Rename"
+            onSubmit={submitRename}
+          />
+          <Modal
+            ref={newWorkspaceModalRef}
+            title="New workspace"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newWorkspaceIn(path || "", name)}
+          />
+          <Modal
+            ref={newCodeFileModalRef}
+            title="New code file"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newCodeFile(path || "", name)}
+          />
+          <Modal
+            ref={newFolderModalRef}
+            title="New folder"
+            inputLabel="Name"
+            submitLabel="Create"
+            onSubmit={(name) => newFolderIn(path || "", name)}
+          />
+        </>
       )}
+      {pendingDownload && <DownloadProgressToast pendingDownload={pendingDownload} />}
+      {uploadProgress && <UploadProgressToast {...uploadProgress} />}
+      {canWrite && <FolderSettingsModal ref={folderSettingsModalRef} />}
     </ManagementPage>
   );
 }

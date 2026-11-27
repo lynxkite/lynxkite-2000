@@ -1,7 +1,7 @@
 //functions related to adding arbitrary number of rows of input fields to a box from the user interface
 import type { UpdateOptions } from "./NodeParameter";
 
-function SelectDropdown({
+export function SelectDropdown({
   options,
   value,
   onChange,

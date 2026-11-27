@@ -283,3 +283,8 @@ when starting to execute a node, and
 to publish the results. Use
 [`WorkspaceNode.publish_error`](../reference/lynxkite-core/workspace.md#lynxkite_core.workspace.WorkspaceNode.publish_error)
 if the node failed.
+
+After awaiting any asynchronous `Result.output` and `Result.display` values, call
+[`Op.save_display`](../reference/lynxkite-core/ops.md#lynxkite_core.ops.Op.save_display)
+with the resolved result and its `OpContext` before publishing it. This saves visualization
+data to disk and updates its display version.

@@ -64,9 +64,11 @@ def elementwise(
         sig = inspect.signature(func)
         params = list(sig.parameters.values())
 
-        if not params or params[0].name != "record":
+        if not params or (
+            params[0].name != "record" and params[0].annotation not in (Record, "Record")
+        ):
             raise ValueError(
-                f"@elementwise requires 'record: Record' as first parameter, got: {params[0].name if params else 'none'}"
+                f"@elementwise requires the first parameter to be named 'record' or annotated as Record, got: {params[0].name if params else 'none'}"
             )
 
         is_lim = getattr(func, LIM_ATTR, False)
