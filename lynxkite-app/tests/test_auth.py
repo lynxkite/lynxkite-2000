@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pycrdt
@@ -155,20 +156,129 @@ async def test_write_filtering_channel_drops_updates():
     assert await writable.recv() == update
 
 
-def _request(token: str | None = None) -> Request:
+def _request(token: str | None = None, body: object = None) -> Request:
     headers = [(b"authorization", f"Bearer {token}".encode())] if token else []
-    return Request({"type": "http", "headers": headers})
+
+    async def receive():
+        return {"type": "http.request", "body": json.dumps(body).encode(), "more_body": False}
+
+    return Request({"type": "http", "headers": headers}, receive)
 
 
-async def test_assistant_requires_write(auth_on, guest_acl):
-    with pytest.raises(HTTPException) as e:
-        await main._assistant_requires_write(_request())
-    assert e.value.status_code == 403
-    await main._assistant_requires_write(_request("ok"))
+async def test_assistant_agent_mode_requires_write(auth_on, guest_acl):
+    for body in [
+        {"workspace": "x.lynxkite", "mode": "agent"},
+        {"workspace": "x.lynxkite"},  # Agent mode is the default.
+        {"workspace": "x.lynxkite", "mode": "unknown"},
+    ]:
+        with pytest.raises(HTTPException) as e:
+            await main._assistant_permission(_request(body=body))
+        assert e.value.status_code == 403
+        await main._assistant_permission(_request("ok", body))
+
+
+async def test_assistant_ask_mode_requires_read(auth_on, guest_acl):
+    body = {"workspace": "x.lynxkite", "mode": "ask"}
+    await main._assistant_permission(_request(body=body))
+    await main._assistant_permission(_request("ok", body))
+
+
+async def test_assistant_ask_mode_rejected_without_read(auth_on, tmp_path):
+    acl.set_data_root(tmp_path)
+    (tmp_path / "settings.yaml").write_text(yaml.dump({"acl": {"read": ["*"], "write": ["*"]}}))
+    try:
+        with pytest.raises(HTTPException) as e:
+            await main._assistant_permission(
+                _request(body={"workspace": "x.lynxkite", "mode": "ask"})
+            )
+        assert e.value.status_code == 403
+    finally:
+        acl.set_data_root(Path())
+
+
+async def test_assistant_checks_the_workspace_folder(auth_on, tmp_path):
+    # Logged in users can write their own folder, but not the root.
+    acl.set_data_root(tmp_path)
+    (tmp_path / "settings.yaml").write_text(yaml.dump({"acl": {"read": ["*"], "write": []}}))
+    (tmp_path / "mine").mkdir()
+    (tmp_path / "mine" / "settings.yaml").write_text(yaml.dump({"acl": {"write": ["sub:u1"]}}))
+    try:
+        await main._assistant_permission(_request("ok", {"workspace": "mine/x.lynxkite"}))
+        with pytest.raises(HTTPException) as e:
+            await main._assistant_permission(_request("ok", {"workspace": "x.lynxkite"}))
+        assert e.value.status_code == 403
+    finally:
+        acl.set_data_root(Path())
+
+
+async def test_assistant_rejects_paths_outside_data_dir():
+    for workspace_path in ["../x.lynxkite", "/etc/x.lynxkite"]:
+        with pytest.raises(HTTPException) as e:
+            await main._assistant_permission(
+                _request(body={"workspace": workspace_path, "mode": "ask"})
+            )
+        assert e.value.status_code == 400
+
+
+async def test_assistant_rejects_malformed_body():
+    for body in [[], {"mode": "ask"}, {"workspace": 1, "mode": "ask"}]:
+        with pytest.raises(HTTPException) as e:
+            await main._assistant_permission(_request(body=body))
+        assert e.value.status_code == 400
 
 
 async def test_assistant_open_when_auth_off():
-    await main._assistant_requires_write(_request())
+    await main._assistant_permission(_request(body={"workspace": "x.lynxkite"}))
+    await main._assistant_permission(_request(body={"workspace": "x.lynxkite", "mode": "ask"}))
+
+
+class FakeAgent:
+    def __init__(self, workspace_path: str, mode: str):
+        self.workspace_path = workspace_path
+        self.mode = mode
+
+    async def astream(self, *args, **kwargs):
+        from langchain_core.messages import AIMessageChunk
+
+        token = AIMessageChunk(content=[{"type": "text", "text": f"{self.mode} answer"}])
+        yield {"type": "messages", "data": (token, {})}
+
+
+@pytest.fixture
+def fake_assistant(monkeypatch):
+    if main.assistant_router is None:
+        pytest.skip("assistant plugin not installed")
+    from lynxkite_assistant import assistant
+
+    created: list[FakeAgent] = []
+
+    def create_agent(workspace_path, mode, model):
+        created.append(FakeAgent(workspace_path, mode))
+        return created[-1]
+
+    monkeypatch.setattr(assistant, "create_agent", create_agent)
+    return created
+
+
+def test_assistant_stream_ask_mode_for_guest(auth_on, guest_acl, fake_assistant):
+    messages = [{"role": "user", "content": "What does this workspace do?"}]
+    response = client.post(
+        "/api/assistant/stream",
+        json={"workspace": "x.lynxkite", "mode": "ask", "messages": messages},
+    )
+    assert response.status_code == 200
+    assert response.text == "ask answer"
+    assert [(a.workspace_path, a.mode) for a in fake_assistant] == [("x.lynxkite", "ask")]
+
+
+def test_assistant_stream_agent_mode_forbidden_for_guest(auth_on, guest_acl, fake_assistant):
+    messages = [{"role": "user", "content": "Add a box."}]
+    response = client.post(
+        "/api/assistant/stream",
+        json={"workspace": "x.lynxkite", "mode": "agent", "messages": messages},
+    )
+    assert response.status_code == 403
+    assert fake_assistant == []
 
 
 def test_provider_accepts_id_token_with_at_hash():

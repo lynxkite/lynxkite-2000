@@ -800,16 +800,21 @@ function LynxKiteFlow() {
                       {gridSnapEnabled ? <GridIcon /> : <GridOffIcon />}
                     </button>
                   </Tooltip>
-                  {config.assistant_available && (
-                    <Tooltip doc={"Toggle assistant"}>
-                      <button
-                        className="btn btn-link"
-                        onClick={() => setIsAssistantOpen(!isAssistantOpen)}
-                      >
-                        <RobotIcon />
-                      </button>
-                    </Tooltip>
-                  )}
+                </>
+              )}
+              {crdt?.ws && config.assistant_available && (
+                // Users without write access can still use the assistant in Ask mode.
+                <Tooltip doc={"Toggle assistant"}>
+                  <button
+                    className="btn btn-link"
+                    onClick={() => setIsAssistantOpen(!isAssistantOpen)}
+                  >
+                    <RobotIcon />
+                  </button>
+                </Tooltip>
+              )}
+              {crdt?.ws && canWrite && (
+                <>
                   <Tooltip
                     doc={
                       crdt.ws.paused ? "Resume automatic execution" : "Pause automatic execution"
@@ -926,12 +931,13 @@ function LynxKiteFlow() {
             </div>
           )}
         </div>
-        {isAssistantOpen && canWrite && (
+        {isAssistantOpen && (
           <Suspense fallback={<aside className="assistant-panel" />}>
             <Assistant
               crdtWorkspace={crdt}
               selectedNodeIds={crdt.selectedNodeIds}
               workspacePath={path}
+              canWrite={canWrite}
             />
           </Suspense>
         )}

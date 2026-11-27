@@ -1016,6 +1016,71 @@ svg {
   }
 }
 
+/* Segmented control: a grey track with the selected option as a raised white thumb. */
+.assistant-mode {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #eef1f4;
+}
+
+.assistant-mode-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #6b7280;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+
+  /* The native radio covers the whole option, so clicks and keyboard focus go to it. */
+  input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    color: #374151;
+  }
+
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+  }
+
+  &.is-active {
+    background: white;
+    color: #0284c7;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.12),
+      0 0 0 1px rgb(0 0 0 / 0.04);
+  }
+
+  &.is-disabled {
+    color: #b8bec6;
+    cursor: not-allowed;
+  }
+}
+
 .assistant-actions {
   display: flex;
   justify-content: flex-end;

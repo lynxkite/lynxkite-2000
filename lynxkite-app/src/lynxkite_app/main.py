@@ -53,14 +53,23 @@ lynxkite_plugins = ops.detect_plugins()
 ops.save_catalogs("plugins loaded")
 
 
-async def _assistant_requires_write(request: fastapi.Request):
-    await auth.check_permission(request, "write", "")
+async def _assistant_permission(request: fastapi.Request):
+    """The assistant only reads the workspace in Ask mode. In Agent mode it edits the workspace."""
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise fastapi.HTTPException(status_code=400, detail="Invalid request")
+    workspace_path = body.get("workspace")
+    if not isinstance(workspace_path, str):
+        raise fastapi.HTTPException(status_code=400, detail="Invalid workspace")
+    safely_inside(data_path, workspace_path)
+    action: acl.Action = "read" if body.get("mode") == "ask" else "write"
+    await auth.check_permission(request, action, workspace_path)
 
 
 app = fastapi.FastAPI(lifespan=crdt.lifespan)
 app.include_router(crdt.router)
 if assistant_router is not None:
-    app.include_router(assistant_router, dependencies=[fastapi.Depends(_assistant_requires_write)])
+    app.include_router(assistant_router, dependencies=[fastapi.Depends(_assistant_permission)])
 if enterprise_backend is not None:
     enterprise_backend.register_routes(app, crdt)
 if register_lim_routes is not None and LIM_WORKER:
