@@ -7,7 +7,7 @@ from pathlib import Path
 import asyncio
 import shutil
 from typing import Any
-from deepagents.backends import protocol, state
+from deepagents.backends import filesystem, protocol, state
 from lynxkite_core import ops, workspace
 from lynxkite_core.workspace_paths import workspace_data_dir
 from . import python_workspace_conversion
@@ -85,6 +85,34 @@ class WorkspaceBackend(state.StateBackend):
 
             traceback.print_exc()
             return protocol.EditResult(error=str(e))
+
+
+READ_ONLY_ERROR = "Error: Files cannot be changed in Ask mode."
+
+
+class ReadOnlyBackend:
+    """Shared base class for the Ask mode backends. Rejects all writes and edits."""
+
+    def write(self, file_path: str, content: str) -> protocol.WriteResult:
+        return protocol.WriteResult(error=READ_ONLY_ERROR)
+
+    def edit(
+        self,
+        file_path: str,
+        old_string: str,
+        new_string: str,
+        replace_all: bool = False,
+    ) -> protocol.EditResult:
+        return protocol.EditResult(error=READ_ONLY_ERROR)
+
+
+class ReadOnlyWorkspaceBackend(ReadOnlyBackend, WorkspaceBackend):
+    def _send_files_update(self, update: dict[str, Any]) -> None:
+        pass  # All changes to the workspace go through here. Discard them.
+
+
+class ReadOnlyFilesystemBackend(ReadOnlyBackend, filesystem.FilesystemBackend):
+    pass
 
 
 def get_workspace_file_content(ws_path: str) -> str:

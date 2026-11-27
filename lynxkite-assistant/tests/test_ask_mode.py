@@ -63,7 +63,6 @@ def ws_path(tmp_path, monkeypatch) -> str:
 
 
 # These writes would all change the workspace or files on disk if they went through.
-# Writes to dotfiles are not covered by the "/**" permission glob.
 WRITE_ATTEMPTS = [
     {
         "name": "edit_file",
@@ -102,6 +101,15 @@ WRITE_ATTEMPTS = [
         },
     },
     {"name": "write_file", "args": {"file_path": "/skills/new.md", "content": "x"}},
+    # Hidden paths are easy to miss with glob-based checks.
+    {
+        "name": "write_file",
+        "args": {"file_path": "/workspace_files/.hidden.txt", "content": "x"},
+    },
+    {
+        "name": "write_file",
+        "args": {"file_path": "/skills/.hidden/new.md", "content": "x"},
+    },
 ]
 
 

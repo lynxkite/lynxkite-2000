@@ -13,18 +13,17 @@ import deepagents
 from deepagents import backends
 from deepagents.backends.protocol import BackendProtocol
 from langchain_core.language_models import BaseChatModel
-from .workspace_backend import WorkspaceBackend
+from .workspace_backend import (
+    ReadOnlyFilesystemBackend,
+    ReadOnlyWorkspaceBackend,
+    WorkspaceBackend,
+)
 from lynxkite_core import workspace
 from lynxkite_core.workspace_paths import workspace_data_dir
 from .instructions import ASK_SYSTEM_PROMPT, SYSTEM_PROMPT, INTERNET_ACCESS_INFO
 
 ASSISTANT_MEMORY_DEPTH = 5  # number of previous states to keep for each workspace
 SKILL_ROOT: str = "../.agents/skills"
-# Ask mode must not change anything, so the write tools are denied everywhere.
-# deepagents matches without DOTGLOB, so paths with hidden parts (like /skills/.a/b) are not covered.
-ASK_MODE_PERMISSIONS = [
-    deepagents.FilesystemPermission(operations=["write"], paths=["/**"], mode="deny")
-]
 
 router = fastapi.APIRouter()
 
@@ -164,12 +163,15 @@ def create_agent(
 ):
     """Creates the agent. In Ask mode it can read the workspace files but cannot change anything."""
     read_only = mode == "ask"
+    # Ask mode must not change anything, so all its backends reject writes.
+    fs_backend = ReadOnlyFilesystemBackend if read_only else backends.FilesystemBackend
+    ws_backend = ReadOnlyWorkspaceBackend if read_only else WorkspaceBackend
     routes: dict[str, BackendProtocol] = {
-        "/skills/": backends.FilesystemBackend(root_dir=SKILL_ROOT, virtual_mode=True)
+        "/skills/": fs_backend(root_dir=SKILL_ROOT, virtual_mode=True)
     }
     workspace_files_path = workspace_data_dir(workspace_path)
     if workspace_files_path.exists():
-        routes["/workspace_files/"] = backends.FilesystemBackend(
+        routes["/workspace_files/"] = fs_backend(
             root_dir=str(workspace_files_path), virtual_mode=True
         )
     # Initializing the memory deletes old states, so we only do it when we are going to write.
@@ -177,11 +179,11 @@ def create_agent(
         _memory_dir(workspace_path) if read_only else _init_memory(workspace_path)
     )
     if memory_files_path.exists():
-        routes["/previous_states/"] = backends.FilesystemBackend(
+        routes["/previous_states/"] = fs_backend(
             root_dir=str(memory_files_path), virtual_mode=True
         )
     backend = backends.CompositeBackend(
-        default=WorkspaceBackend(workspace_path), routes=routes
+        default=ws_backend(workspace_path), routes=routes
     )
     tools = [internet_search, scrape_web_page, map_web_page] if web_access_url else []
     system_prompt = ASK_SYSTEM_PROMPT if read_only else SYSTEM_PROMPT
@@ -193,7 +195,6 @@ def create_agent(
         skills=["/skills"],
         tools=tools,
         system_prompt=system_prompt,
-        permissions=ASK_MODE_PERMISSIONS if read_only else None,
     )
 
 
