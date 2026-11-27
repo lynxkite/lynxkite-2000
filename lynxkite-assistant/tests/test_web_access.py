@@ -105,6 +105,7 @@ def agent_options(monkeypatch, tmp_path, web_access_url) -> dict:
         raise AgentCreated()
 
     monkeypatch.setattr(assistant, "web_access_url", web_access_url)
+    monkeypatch.setattr(assistant, "SKILL_ROOT", str(tmp_path))
     monkeypatch.setattr(
         assistant.deepagents, "create_deep_agent", fake_create_deep_agent
     )
@@ -112,7 +113,7 @@ def agent_options(monkeypatch, tmp_path, web_access_url) -> dict:
         workspace=str(tmp_path / "test.lynxkite"), messages=[]
     )
     with pytest.raises(AgentCreated):
-        asyncio.run(assistant.assistant_stream(req, skill_root=str(tmp_path)))
+        asyncio.run(assistant.assistant_stream(req))
     return options
 
 
